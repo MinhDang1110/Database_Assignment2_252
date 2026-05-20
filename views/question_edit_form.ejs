@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Sửa câu hỏi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS (nhất quán với toàn hệ thống) ── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+      --rose-500:   #f43f5e;
+
+      /* Surfaces */
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      /* Text */
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      /* Borders */
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      /* Shadows */
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      /* Radii */
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .hero-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ──────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.22); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+    .alert-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── BREADCRUMB ──────────────────────────────────── */
+    .breadcrumb-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .breadcrumb-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 600;
+      color: var(--indigo-600); text-decoration: none;
+      padding: 6px 14px; border-radius: 10px;
+      background: white; border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: background 0.16s, border-color 0.16s, transform 0.16s;
+    }
+    .breadcrumb-link:hover {
+      background: var(--bg-soft); border-color: rgba(99,102,241,0.25);
+      transform: translateX(-2px);
+    }
+    .breadcrumb-link svg { width: 14px; height: 14px; }
+    .breadcrumb-sep { color: var(--txt-muted); font-size: 13px; }
+    .breadcrumb-current { font-size: 13.5px; font-weight: 600; color: var(--txt-soft); }
+
+    /* ─── HERO BANNER ─────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%, rgba(45,212,191,0.12) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.30);
+      color: var(--indigo-300); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 14px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--amber-400);
+      box-shadow: 0 0 8px rgba(251,191,36,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero-title {
+      font-size: clamp(20px, 2.4vw, 28px);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.2;
+      color: #f1f0fe; margin-bottom: 6px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #818cf8, #a78bfa 40%, #2dd4bf);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle { color: #7b83a8; font-size: 13.5px; line-height: 1.7; }
+
+    /* ─── FORM CARD ──────────────────────────────────── */
+    .form-card {
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--r-lg); padding: 28px 30px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      margin-bottom: 16px;
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .form-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 2px 2px 0 0;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6 50%, #2dd4bf);
+    }
+
+    /* Dimmed card for inactive sections */
+    .form-card.is-dimmed {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .form-card.is-dimmed::before {
+      background: linear-gradient(90deg, #9ca3af, #d1d5db);
+    }
+
+    .card-section-title {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--txt-head); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-section-badge {
+      font-size: 11px; font-weight: 700; padding: 2px 9px;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-indigo { background: rgba(99,102,241,0.12); color: var(--indigo-600); }
+    .badge-teal   { background: rgba(45,212,191,0.12); color: #0d9488; }
+    .badge-amber  { background: rgba(251,191,36,0.12); color: #b45309; }
+
+    /* ─── FORM ELEMENTS ──────────────────────────────── */
+    .form-grid {
+      display: grid;
+      gap: 18px;
+    }
+    .form-grid-2 { grid-template-columns: 1fr 1fr; }
+    .form-grid-1 { grid-template-columns: 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 12.5px; font-weight: 700;
+      color: var(--txt-soft); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border);
+      background: var(--bg-soft);
+      font-family: inherit;
+      font-size: 14.5px; font-weight: 500;
+      color: var(--txt-head);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: var(--txt-muted); font-weight: 400; }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: rgba(99,102,241,0.55);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+      background: white;
+    }
+    .form-input:disabled,
+    .form-select:disabled {
+      background: var(--border-soft); color: var(--txt-muted); cursor: not-allowed;
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+    .form-hint {
+      font-size: 12px; color: var(--txt-muted);
+      display: flex; align-items: flex-start; gap: 5px;
+    }
+    .form-hint svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Option input with letter badge */
+    .option-input-wrap {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .option-letter {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(99,102,241,0.10); color: var(--indigo-600);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 12px; font-weight: 800;
+    }
+
+    /* ─── SUBMIT STRIP ───────────────────────────────── */
+    .submit-strip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .submit-strip-info { font-size: 13px; color: var(--txt-muted); }
+    .submit-strip-info strong { color: var(--txt-soft); }
+
+    .btn-ctrl {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: var(--r-sm);
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      text-decoration: none;
+    }
+    .btn-ctrl:active { transform: scale(0.97); }
+    .btn-ctrl svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--indigo-600), var(--violet-500));
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(99,102,241,0.45); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      color: var(--txt-soft);
+    }
+    .btn-ghost:hover { background: white; border-color: rgba(99,102,241,0.25); color: var(--indigo-600); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .main-content { padding: 20px 16px 40px; }
+      .topnav { padding: 0 16px; }
+      .nav-center { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+<%
+  const _locals        = locals || {};
+  const quiz           = _locals.quiz     || {};
+  const question       = _locals.question || {};
+  const options        = _locals.options  || [];
+  const fitbAnswers    = _locals.fitbAnswers || [];
+  const successMessage = typeof _locals.success !== 'undefined' ? _locals.success : null;
+  const errorMessage   = _locals.error || null;
+  const user           = _locals.currentUser || null;
+
+  const option1 = options[0] ? options[0].Option_text : '';
+  const option2 = options[1] ? options[1].Option_text : '';
+  const option3 = options[2] ? options[2].Option_text : '';
+  const option4 = options[3] ? options[3].Option_text : '';
+  const score   = question.Question_type === 'MCQ'
+    ? question.MCQ_score
+    : question.FITB_score;
+  const fitbText = fitbAnswers.map(a => a.Answer_text).join('\n');
+%>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+    <a href="/lecturer/dashboard" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Lecturer Portal</small>
+      </div>
+    </a>
+
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/lecturer/dashboard" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/lecturer/courses/<%= quiz.Course_ID %>" class="nav-pill active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+    </nav>
+
+    <div class="nav-right">
+      <% if (user) { %>
+        <div class="user-chip">
+          <div class="user-avatar"><%= String(user.Display_name || user.Username || 'L').charAt(0).toUpperCase() %></div>
+          <span class="user-name"><%= user.Display_name || user.Username %></span>
+        </div>
+      <% } %>
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (successMessage) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-row" aria-label="Điều hướng phụ">
+      <a href="/lecturer/courses/<%= quiz.Course_ID %>" class="breadcrumb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Quay lại môn học
+      </a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <a href="/lecturer/quizzes/<%= quiz.Quiz_ID %>/questions" class="breadcrumb-link" style="margin:0;">
+        Quiz #<%= quiz.Quiz_ID %>
+      </a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">Sửa câu hỏi #<%= question.Question_ID %></span>
+    </nav>
+
+    <!-- Hero banner -->
+    <div class="hero-banner" role="region" aria-label="Sửa câu hỏi">
+      <div class="hero-inner">
+        <div class="hero-badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          Giảng viên · Chỉnh sửa câu hỏi
+        </div>
+        <h1 class="hero-title">
+          Sửa câu hỏi <span class="gradient-text">#<%= question.Question_ID %></span>
+          <br><span class="gradient-text">Quiz #<%= quiz.Quiz_ID %> – <%= quiz.Course_name || '' %></span>
+        </h1>
+        <p class="hero-subtitle" style="margin-top:8px;">
+          Chỉnh sửa nội dung bên dưới. Sau khi lưu, hệ thống sẽ tự động chấm lại điểm cho tất cả sinh viên đã làm bài.
+        </p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form
+      method="POST"
+      action="/lecturer/quizzes/<%= quiz.Quiz_ID %>/questions/<%= question.Question_ID %>"
+      id="question-edit-form"
+      novalidate
+    >
+
+      <!-- ── Card 1: Thông tin chung ─────────────────── -->
+      <div class="form-card">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Thông tin chung
+        </div>
+
+        <div class="form-grid form-grid-2" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="form-label" for="q-type">Loại câu hỏi</label>
+            <input
+              id="q-type"
+              class="form-input"
+              value="<%= question.Question_type %>"
+              disabled
+              aria-describedby="q-type-hint"
+            >
+            <span class="form-hint" id="q-type-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Không thể thay đổi loại câu hỏi sau khi đã tạo.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="q-score">Điểm cho câu hỏi</label>
+            <input
+              id="q-score"
+              type="number"
+              name="Score"
+              class="form-input"
+              min="0.01"
+              step="0.01"
+              required
+              value="<%= score %>"
+              placeholder="Ví dụ: 1.00"
+              aria-describedby="q-score-hint"
+            >
+            <span class="form-hint" id="q-score-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Tối thiểu 0.01 điểm.
+            </span>
+          </div>
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="q-content">Nội dung câu hỏi</label>
+            <textarea
+              id="q-content"
+              name="Content"
+              class="form-textarea"
+              rows="4"
+              required
+              placeholder="Nhập nội dung câu hỏi..."
+              aria-describedby="q-content-hint"
+            ><%= question.Content %></textarea>
+            <span class="form-hint" id="q-content-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Với câu điền khuyết, dùng <code style="font-size:11.5px;background:var(--bg-soft);padding:1px 5px;border-radius:4px;border:1px solid var(--border);">{blank}</code> để đánh dấu chỗ trống.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Card 2: MCQ options ──────────────────────── -->
+      <% if (question.Question_type === 'MCQ') { %>
+      <div class="form-card" id="card-mcq">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Các lựa chọn trắc nghiệm
+          <span class="card-section-badge badge-indigo">MCQ</span>
+        </div>
+
+        <div class="form-grid form-grid-2" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="form-label" for="opt1">Lựa chọn A</label>
+            <div class="option-input-wrap">
+              <div class="option-letter" aria-hidden="true">A</div>
+              <input id="opt1" name="Option_1" class="form-input" value="<%= option1 %>" placeholder="Nội dung lựa chọn A" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="opt2">Lựa chọn B</label>
+            <div class="option-input-wrap">
+              <div class="option-letter" aria-hidden="true">B</div>
+              <input id="opt2" name="Option_2" class="form-input" value="<%= option2 %>" placeholder="Nội dung lựa chọn B" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="opt3">Lựa chọn C <span style="font-weight:400;color:var(--txt-muted);">(tuỳ chọn)</span></label>
+            <div class="option-input-wrap">
+              <div class="option-letter" aria-hidden="true">C</div>
+              <input id="opt3" name="Option_3" class="form-input" value="<%= option3 %>" placeholder="Nội dung lựa chọn C">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="opt4">Lựa chọn D <span style="font-weight:400;color:var(--txt-muted);">(tuỳ chọn)</span></label>
+            <div class="option-input-wrap">
+              <div class="option-letter" aria-hidden="true">D</div>
+              <input id="opt4" name="Option_4" class="form-input" value="<%= option4 %>" placeholder="Nội dung lựa chọn D">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="mc-correct">Đáp án đúng</label>
+            <input
+              id="mc-correct"
+              name="MC_correct_answer"
+              class="form-input"
+              value="<%= question.MC_correct_answer || '' %>"
+              placeholder="Nhập chính xác nội dung của lựa chọn đúng"
+              required
+              aria-describedby="mc-correct-hint"
+            >
+            <span class="form-hint" id="mc-correct-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Phải trùng chính xác (kể cả hoa/thường) với nội dung một trong các lựa chọn trên.
+            </span>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- ── Card 3: Fill-in-the-blank ───────────────── -->
+      <% if (question.Question_type === 'FILL_BLANK') { %>
+      <div class="form-card" id="card-fitb">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Đáp án điền khuyết
+          <span class="card-section-badge badge-teal">FILL_BLANK</span>
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="fitb-answers">Các đáp án chấp nhận được</label>
+            <textarea
+              id="fitb-answers"
+              name="FITB_answers"
+              class="form-textarea"
+              rows="4"
+              required
+              placeholder="Mỗi dòng một đáp án, hoặc ngăn cách bằng dấu phẩy&#10;Ví dụ:&#10;hà nội&#10;Hà Nội"
+              aria-describedby="fitb-hint"
+            ><%= fitbText %></textarea>
+            <span class="form-hint" id="fitb-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Mỗi dòng là một đáp án chấp nhận. Có thể nhập nhiều biến thể (hoa/thường, có/không dấu).
+            </span>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- ── Submit strip ─────────────────────────────── -->
+      <div class="submit-strip">
+        <div class="submit-strip-info">
+          Câu hỏi <strong>#<%= question.Question_ID %></strong> · Quiz <strong>#<%= quiz.Quiz_ID %></strong> · <%= quiz.Course_name || '' %>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <a href="/lecturer/quizzes/<%= quiz.Quiz_ID %>/questions" class="btn-ctrl btn-ghost">
+            Huỷ
+          </a>
+          <button type="submit" class="btn-ctrl btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Lưu thay đổi & chấm lại điểm
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </main>
+</div>
+
+</body>
+</html>

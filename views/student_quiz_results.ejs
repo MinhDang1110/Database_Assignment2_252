@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Xem lại kết quả Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS (nhất quán với student_dashboard.ejs & student_course_detail.ejs) ── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+      --rose-500:   #f43f5e;
+
+      /* Surfaces */
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      /* Text */
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      /* Borders */
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      /* Shadows */
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      /* Radii */
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .hero-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    /* ─── PAGE WRAPPER ────────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV (giống hệt dashboard & course detail) ─── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+      font-family: "Be Vietnam Pro", sans-serif;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.22); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 48px;
+      max-width: 1320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+
+    /* ─── BREADCRUMB ──────────────────────────────────── */
+    .breadcrumb-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .breadcrumb-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 600;
+      color: var(--indigo-600); text-decoration: none;
+      padding: 6px 14px; border-radius: 10px;
+      background: white; border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: background 0.16s, border-color 0.16s, transform 0.16s;
+    }
+    .breadcrumb-link:hover {
+      background: var(--bg-soft); border-color: rgba(99,102,241,0.25);
+      transform: translateX(-2px);
+    }
+    .breadcrumb-link svg { width: 14px; height: 14px; }
+    .breadcrumb-sep { color: var(--txt-muted); font-size: 13px; }
+    .breadcrumb-current {
+      font-size: 13.5px; font-weight: 600; color: var(--txt-soft);
+    }
+
+    /* ─── HERO BANNER ─────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl);
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%, rgba(45,212,191,0.12) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none;
+    }
+    .hero-banner::after {
+      content: "";
+      position: absolute; right: -80px; top: -80px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 24px; flex-wrap: wrap;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.30);
+      color: var(--indigo-300); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 14px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal-400);
+      box-shadow: 0 0 8px rgba(45,212,191,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
+      color: #f1f0fe; margin-bottom: 8px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #818cf8, #a78bfa 40%, #2dd4bf);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      color: #7b83a8; font-size: 14px; line-height: 1.75; max-width: 540px;
+    }
+
+    /* Score display in hero */
+    .hero-score-group {
+      display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .score-ring-card {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-lg); padding: 20px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      min-width: 130px;
+    }
+    .score-ring {
+      position: relative; width: 72px; height: 72px;
+    }
+    .score-ring svg { width: 72px; height: 72px; transform: rotate(-90deg); }
+    .score-ring-val {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 800; color: #f1f0fe; letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .score-ring-val small { font-size: 10px; color: #7b83a8; font-weight: 500; margin-top: 1px; }
+    .score-ring-label { font-size: 12px; color: #7b83a8; font-weight: 600; text-align: center; }
+
+    .hero-stat-mini {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 10px 18px;
+    }
+    .hero-stat-mini strong {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 22px; font-weight: 800; color: #f1f0fe; letter-spacing: -0.02em;
+    }
+    .hero-stat-mini span { font-size: 12px; color: #7b83a8; line-height: 1.4; max-width: 64px; }
+
+    /* ─── RESULT BADGE (Passed / Failed) ─────────────── */
+    .result-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 16px; border-radius: 999px;
+      font-size: 13.5px; font-weight: 700;
+    }
+    .result-badge-passed {
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.28);
+      color: #10b981;
+    }
+    .result-badge-failed {
+      background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.28);
+      color: #f43f5e;
+    }
+
+    /* ─── ATTEMPT SELECTOR CARD ───────────────────────── */
+    .attempt-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 24px;
+      box-shadow: var(--shadow-sm); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .attempt-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13.5px; font-weight: 700; color: var(--txt-soft);
+      flex-shrink: 0;
+    }
+    .attempt-label svg { width: 15px; height: 15px; color: var(--indigo-500); }
+    .attempt-select-wrap { flex: 1; min-width: 220px; }
+    .attempt-select {
+      width: 100%; height: 40px;
+      padding: 0 14px;
+      border-radius: var(--r-sm); border: 1.5px solid var(--border);
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-size: 13.5px; font-weight: 600; color: var(--txt-head);
+      background: var(--bg-soft);
+      cursor: pointer; outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .attempt-select:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+
+    /* ─── SECTION STRUCTURE ───────────────────────────── */
+    .section-head {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .section-label { display: flex; align-items: center; gap: 10px; }
+    .section-label-bar {
+      width: 3px; height: 22px; border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #2dd4bf);
+    }
+    .section-title {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.025em; color: var(--txt-head);
+    }
+    .section-count {
+      background: var(--indigo-100); color: var(--indigo-600);
+      border-radius: 999px; padding: 3px 11px;
+      font-size: 12.5px; font-weight: 700;
+    }
+
+    /* ─── MAIN REVIEW LAYOUT ──────────────────────────── */
+    .review-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      align-items: start;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .review-sidebar {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+      overflow: hidden; position: sticky; top: 84px;
+    }
+    .sidebar-head {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 12px; font-weight: 700;
+      color: var(--txt-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .sidebar-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .q-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: var(--r-sm);
+      text-decoration: none; color: var(--txt-body);
+      transition: background 0.16s, border-color 0.16s;
+      border: 1.5px solid transparent;
+    }
+    .q-link:hover { background: var(--bg-soft); }
+    .q-link.active {
+      background: rgba(99,102,241,0.07); border-color: rgba(99,102,241,0.22);
+    }
+    .q-num-badge {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 12px; font-weight: 800;
+    }
+    .q-num-badge-correct { background: rgba(16,185,129,0.12); color: #10b981; }
+    .q-num-badge-wrong   { background: rgba(244,63,94,0.12);  color: #f43f5e; }
+    .q-num-badge-default { background: rgba(99,102,241,0.10); color: var(--indigo-500); }
+
+    .q-link-info { flex: 1; min-width: 0; }
+    .q-link-title {
+      font-size: 13px; font-weight: 600; color: var(--txt-head);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .q-link.active .q-link-title { color: var(--indigo-600); }
+    .q-link-sub {
+      font-size: 11.5px; color: var(--txt-muted); margin-top: 1px;
+    }
+    .q-link-score {
+      font-size: 12px; font-weight: 700;
+      color: var(--txt-soft); flex-shrink: 0;
+    }
+
+    /* ─── MAIN REVIEW CARD ────────────────────────────── */
+    .review-main { display: flex; flex-direction: column; gap: 16px; }
+
+    .question-card {
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--r-lg); padding: 28px 30px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    }
+    .question-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 2px 2px 0 0;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6 50%, #2dd4bf);
+    }
+
+    .question-meta-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .q-index-chip {
+      background: rgba(99,102,241,0.10); color: var(--indigo-600);
+      border-radius: 8px; padding: 4px 12px;
+      font-size: 12.5px; font-weight: 800;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+    }
+    .q-type-chip {
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: 8px; padding: 4px 11px;
+      font-size: 12px; font-weight: 600; color: var(--txt-muted);
+    }
+    .q-correct-chip {
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+    }
+    .q-correct-chip-yes {
+      background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.25);
+      color: #10b981;
+    }
+    .q-correct-chip-no {
+      background: rgba(244,63,94,0.10); border: 1px solid rgba(244,63,94,0.25);
+      color: #f43f5e;
+    }
+
+    .question-text {
+      font-size: 18px; font-weight: 600; color: var(--txt-head);
+      line-height: 1.6; margin-bottom: 24px; letter-spacing: -0.015em;
+    }
+
+    /* MCQ Options */
+    .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .option-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 16px; border-radius: var(--r-sm);
+      border: 1.5px solid var(--border); background: var(--bg-soft);
+      font-size: 15px; color: var(--txt-body);
+      transition: border-color 0.16s, background 0.16s;
+    }
+    .option-row.is-correct-answer {
+      background: rgba(16,185,129,0.07); border-color: rgba(16,185,129,0.35);
+      color: #064e3b;
+    }
+    .option-row.is-student-answer:not(.is-correct-answer) {
+      background: rgba(244,63,94,0.07); border-color: rgba(244,63,94,0.30);
+      color: #881337;
+    }
+    .option-row.is-correct-answer.is-student-answer {
+      background: rgba(16,185,129,0.10); border-color: rgba(16,185,129,0.45);
+    }
+    .option-radio-wrap {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--border); background: white; position: relative;
+      display: grid; place-items: center;
+    }
+    .option-row.is-student-answer .option-radio-wrap {
+      border-color: #6366f1;
+    }
+    .option-row.is-student-answer .option-radio-wrap::after {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: #6366f1; position: absolute;
+    }
+    .option-row.is-correct-answer .option-radio-wrap {
+      border-color: #10b981; background: rgba(16,185,129,0.12);
+    }
+    .option-row.is-correct-answer .option-radio-wrap::after {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: #10b981; position: absolute;
+    }
+    .option-label {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+      background: rgba(99,102,241,0.10); color: var(--indigo-600);
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 800;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+    }
+    .option-row.is-correct-answer .option-label { background: rgba(16,185,129,0.15); color: #059669; }
+    .option-row.is-student-answer:not(.is-correct-answer) .option-label { background: rgba(244,63,94,0.12); color: #f43f5e; }
+
+    .option-text { flex: 1; font-size: 15px; line-height: 1.5; }
+
+    .option-tag {
+      flex-shrink: 0; font-size: 11.5px; font-weight: 700; padding: 2px 9px;
+      border-radius: 999px;
+    }
+    .option-tag-correct { background: rgba(16,185,129,0.15); color: #059669; }
+    .option-tag-wrong   { background: rgba(244,63,94,0.12);  color: #f43f5e; }
+
+    /* Fill blank answer */
+    .fill-answer-box {
+      padding: 14px 18px; border-radius: var(--r-sm);
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .fill-answer-box-label {
+      font-size: 12px; font-weight: 700; color: var(--txt-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;
+    }
+    .fill-answer-text {
+      font-size: 15.5px; font-weight: 600; color: var(--txt-head);
+    }
+
+    /* ─── INFO BOXES ──────────────────────────────────── */
+    .info-box-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .info-box {
+      padding: 14px 18px; border-radius: var(--r-sm); border: 1.5px solid transparent;
+    }
+    .info-box-label {
+      font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 6px;
+    }
+    .info-box-value { font-size: 14.5px; font-weight: 600; }
+
+    .info-box-answer {
+      background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.18);
+    }
+    .info-box-answer .info-box-label { color: var(--indigo-500); }
+    .info-box-answer .info-box-value { color: var(--txt-head); }
+
+    .info-box-correct {
+      background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.20);
+    }
+    .info-box-correct .info-box-label { color: #d97706; }
+    .info-box-correct .info-box-value { color: #92400e; }
+
+    /* ─── SCORE RESULT STRIP ──────────────────────────── */
+    .score-strip {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--bg-soft), white);
+      border: 1.5px solid var(--border);
+    }
+    .score-strip-icon {
+      width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+      display: grid; place-items: center; font-size: 19px;
+    }
+    .score-strip-icon-correct { background: rgba(16,185,129,0.12); }
+    .score-strip-icon-wrong   { background: rgba(244,63,94,0.10); }
+
+    .score-strip-body { flex: 1; }
+    .score-strip-title {
+      font-size: 13.5px; font-weight: 700; color: var(--txt-head); margin-bottom: 3px;
+    }
+    .score-strip-sub { font-size: 12.5px; color: var(--txt-muted); }
+
+    .score-strip-val {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 22px; font-weight: 800; letter-spacing: -0.03em; flex-shrink: 0;
+    }
+    .score-strip-val-correct { color: #10b981; }
+    .score-strip-val-wrong   { color: #f43f5e; }
+
+    /* ─── EMPTY STATE ─────────────────────────────────── */
+    .empty-card {
+      background: var(--bg-card); border: 1.5px dashed var(--border);
+      border-radius: var(--r-lg); padding: 48px 32px;
+      text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 14px; }
+    .empty-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 17px; font-weight: 700; color: var(--txt-head); margin-bottom: 8px;
+    }
+    .empty-body { font-size: 14px; color: var(--txt-muted); }
+  </style>
+</head>
+
+<body>
+<%
+  /* ── Normalize variables (giống cách dùng trong file gốc) ── */
+  const quizData       = typeof quiz            !== 'undefined' ? quiz            : {};
+  const attemptList    = typeof attempts        !== 'undefined' ? attempts        : [];
+  const questionList   = typeof reviewQuestions !== 'undefined' ? reviewQuestions : [];
+  const question       = typeof currentQuestion !== 'undefined' ? currentQuestion : null;
+  const currentAttempt = typeof selectedAttempt !== 'undefined' ? selectedAttempt : null;
+  const successMessage = typeof success         !== 'undefined' ? success         : null;
+  const errorMessage   = typeof error           !== 'undefined' ? error           : null;
+  const user           = typeof currentUser     !== 'undefined' ? currentUser     : null;
+
+  const selectedAttemptObj = currentAttempt
+    ? attemptList.find(a => Number(a.Attempt_order) === Number(currentAttempt))
+    : null;
+
+  const isPassed = selectedAttemptObj && selectedAttemptObj.Result_status === 'Passed';
+%>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+
+    <!-- Brand -->
+    <a href="/student/dashboard" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Learning Management</small>
+      </div>
+    </a>
+
+    <!-- Nav links -->
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/student/dashboard" class="nav-pill" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/student/dashboard" class="nav-pill active" aria-label="Khóa học của tôi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+    </nav>
+
+    <!-- User area -->
+    <div class="nav-right">
+      <% if (user) { %>
+        <div class="user-chip" aria-label="Thông tin tài khoản">
+          <div class="user-avatar" aria-hidden="true">
+            <%= String(user.Display_name || user.Username || 'U').charAt(0).toUpperCase() %>
+          </div>
+          <span class="user-name"><%= user.Display_name || user.Username %></span>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit" aria-label="Đăng xuất">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+    <% if (successMessage) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-row" aria-label="Điều hướng phụ">
+      <a href="/student/courses/<%= quizData.Course_ID %>" class="breadcrumb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Quay lại khóa học
+      </a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current"><%= quizData.Course_name || 'Khóa học' %></span>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">Kết quả <%= quizData.Quiz_title || ('Quiz #' + quizData.Quiz_ID) %></span>
+    </nav>
+
+    <!-- ── HERO BANNER ───────────────────────────────── -->
+    <div class="hero-banner" role="region" aria-label="Tổng quan kết quả quiz">
+      <div class="hero-inner">
+        <!-- Left: info -->
+        <div>
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Xem lại kết quả
+          </div>
+
+          <h1 class="hero-title">
+            <%= quizData.Quiz_title || ('Quiz #' + quizData.Quiz_ID) %>
+            <br>
+            <span class="gradient-text"><%= quizData.Course_name || '' %></span>
+          </h1>
+
+          <p class="hero-subtitle" style="margin-top:10px;">
+            Điểm đạt yêu cầu:
+            <strong style="color:#a5b4fc;">
+              <%= quizData.Pass_score %>/<%= quizData.Max_score %>
+            </strong>
+            &nbsp;·&nbsp;
+            Tổng số lần làm: <strong style="color:#a5b4fc;"><%= attemptList.length %></strong>
+          </p>
+
+          <div style="margin-top:18px;">
+            <% if (selectedAttemptObj) { %>
+              <% if (isPassed) { %>
+                <span class="result-badge result-badge-passed" aria-label="Kết quả: Đã đạt">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  Đã đạt
+                </span>
+              <% } else { %>
+                <span class="result-badge result-badge-failed" aria-label="Kết quả: Chưa đạt">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Chưa đạt
+                </span>
+              <% } %>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Right: score ring -->
+        <% if (selectedAttemptObj) { %>
+          <div class="hero-score-group">
+            <div class="score-ring-card" aria-label="Điểm số lần đã chọn">
+              <%
+                const earned = Number(selectedAttemptObj.Total_score || 0);
+                const maxSc  = Number(quizData.Max_score || 1);
+                const pct    = Math.round((earned / maxSc) * 100);
+                const circ   = 2 * Math.PI * 28;  /* r=28 */
+                const dash   = circ * pct / 100;
+                const ringColor = isPassed ? '#10b981' : '#f43f5e';
+              %>
+              <div class="score-ring" aria-hidden="true">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+                  <circle cx="36" cy="36" r="28" fill="none"
+                    stroke="<%= ringColor %>" stroke-width="6"
+                    stroke-dasharray="<%= dash.toFixed(2) %> <%= circ.toFixed(2) %>"
+                    stroke-linecap="round"
+                    style="transition: stroke-dasharray 1s cubic-bezier(0.16,1,0.3,1);"
+                  />
+                </svg>
+                <div class="score-ring-val">
+                  <%= pct %>%
+                  <small>điểm</small>
+                </div>
+              </div>
+              <div class="score-ring-label">
+                <%= earned %>/<%= maxSc %> điểm
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;justify-content:center;">
+              <div class="hero-stat-mini" aria-label="Số câu đúng">
+                <strong style="color:<%= isPassed ? '#34d399' : '#f87171' %>;">
+                  <%= questionList.filter(q => q.Is_correct).length %>/<%= questionList.length %>
+                </strong>
+                <span>Câu<br>trả lời đúng</span>
+              </div>
+              <div class="hero-stat-mini" aria-label="Lần làm bài">
+                <strong><%= selectedAttemptObj.Attempt_order %></strong>
+                <span>Lần<br>làm bài</span>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div><!-- /.hero-banner -->
+
+    <!-- ── ATTEMPT SELECTOR ──────────────────────────── -->
+    <div class="attempt-card" role="form" aria-label="Chọn lần làm bài">
+      <div class="attempt-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Chọn lần làm bài
+      </div>
+
+      <div class="attempt-select-wrap">
+        <select
+          class="attempt-select"
+          onchange="if(this.value){ window.location.href = this.value; }"
+          aria-label="Danh sách lần làm bài"
+        >
+          <% if (attemptList.length === 0) { %>
+            <option>Chưa có lần làm bài nào</option>
+          <% } %>
+          <% attemptList.forEach(a => { %>
+            <option
+              value="/student/quizzes/<%= quizData.Quiz_ID %>/results?attempt=<%= a.Attempt_order %>"
+              <%= Number(a.Attempt_order) === Number(currentAttempt) ? 'selected' : '' %>
+            >
+              Lần <%= a.Attempt_order %> – Điểm <%= a.Total_score %>/<%= quizData.Max_score %> – <%= a.Result_status %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <% if (selectedAttemptObj) { %>
+        <% if (isPassed) { %>
+          <span class="result-badge result-badge-passed" aria-label="Kết quả lần này: Đã đạt">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Đã đạt
+          </span>
+        <% } else { %>
+          <span class="result-badge result-badge-failed" aria-label="Kết quả lần này: Chưa đạt">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Chưa đạt
+          </span>
+        <% } %>
+      <% } %>
+    </div><!-- /.attempt-card -->
+
+    <!-- ── REVIEW LAYOUT ─────────────────────────────── -->
+    <% if (!currentAttempt || questionList.length === 0 || !question) { %>
+      <div class="empty-card" role="status" aria-label="Chưa có dữ liệu">
+        <div class="empty-icon" aria-hidden="true">📝</div>
+        <div class="empty-title">Chưa có dữ liệu để xem lại</div>
+        <div class="empty-body">Vui lòng chọn một lần làm bài từ danh sách bên trên.</div>
+      </div>
+
+    <% } else { %>
+
+      <!-- Section header -->
+      <div class="section-head" style="margin-bottom:16px;">
+        <div class="section-label">
+          <div class="section-label-bar" aria-hidden="true"></div>
+          <h2 class="section-title">Xem lại đáp án</h2>
+          <span class="section-count"><%= questionList.length %> câu hỏi</span>
+        </div>
+      </div>
+
+      <div class="review-layout">
+
+        <!-- ─ SIDEBAR: question navigator ──────────────── -->
+        <aside class="review-sidebar" aria-label="Danh sách câu hỏi">
+          <div class="sidebar-head">Câu hỏi</div>
+          <div class="sidebar-list" role="list">
+            <% questionList.forEach((q, idx) => {
+              const isActive  = Number(q.Question_ID) === Number(question.Question_ID);
+              const isCorrect = q.Is_correct;
+            %>
+              <a
+                href="/student/quizzes/<%= quizData.Quiz_ID %>/results?attempt=<%= currentAttempt %>&question=<%= q.Question_ID %>"
+                class="q-link <%= isActive ? 'active' : '' %>"
+                role="listitem"
+                aria-current="<%= isActive ? 'true' : 'false' %>"
+                aria-label="Câu hỏi <%= idx + 1 %>, <%= isCorrect ? 'Đúng' : 'Sai' %>"
+              >
+                <div class="q-num-badge <%= isCorrect ? 'q-num-badge-correct' : 'q-num-badge-wrong' %>" aria-hidden="true">
+                  <%= idx + 1 %>
+                </div>
+
+                <div class="q-link-info">
+                  <div class="q-link-title">Câu <%= idx + 1 %></div>
+                  <div class="q-link-sub"><%= isCorrect ? '✓ Đúng' : '✗ Sai' %></div>
+                </div>
+
+                <div class="q-link-score" aria-label="Điểm: <%= Number(q.Earned_score || 0).toFixed(1) %>/<%= Number(q.Max_score || 0).toFixed(1) %>">
+                  <%= Number(q.Earned_score || 0).toFixed(1) %>/<%= Number(q.Max_score || 0).toFixed(1) %>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+        </aside>
+
+        <!-- ─ MAIN: question detail ──────────────────── -->
+        <div class="review-main" role="main" aria-label="Chi tiết câu hỏi">
+
+          <!-- Question card -->
+          <article class="question-card" aria-label="Câu hỏi hiện tại">
+            <!-- Meta row -->
+            <div class="question-meta-row">
+              <span class="q-index-chip">
+                Câu <%= questionList.findIndex(q => Number(q.Question_ID) === Number(question.Question_ID)) + 1 %>
+              </span>
+              <span class="q-type-chip">
+                <%= question.Question_type === 'MCQ' ? 'Trắc nghiệm' : 'Điền vào chỗ trống' %>
+              </span>
+              <span class="q-correct-chip <%= question.Is_correct ? 'q-correct-chip-yes' : 'q-correct-chip-no' %>"
+                    aria-label="Kết quả: <%= question.Is_correct ? 'Đúng' : 'Sai' %>">
+                <% if (question.Is_correct) { %>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  Trả lời đúng
+                <% } else { %>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Trả lời sai
+                <% } %>
+              </span>
+            </div>
+
+            <!-- Question text -->
+            <div class="question-text" id="question-content">
+              <%= question.Content %>
+            </div>
+
+            <!-- MCQ: options -->
+            <% if (question.Question_type === 'MCQ') { %>
+              <div class="options-list" role="list" aria-label="Các lựa chọn">
+                <% question.Options.forEach((opt, idx) => {
+                  const isStudentAnswer  = question.Student_answer === opt;
+                  const isCorrectAnswer  = question.Correct_answers && question.Correct_answers.includes(opt);
+                  let rowClass = '';
+                  if (isCorrectAnswer && isStudentAnswer) rowClass = 'is-correct-answer is-student-answer';
+                  else if (isCorrectAnswer)  rowClass = 'is-correct-answer';
+                  else if (isStudentAnswer)  rowClass = 'is-student-answer';
+                %>
+                  <div class="option-row <%= rowClass %>" role="listitem"
+                       aria-label="Lựa chọn <%= String.fromCharCode(65 + idx) %>: <%= opt %><%= isCorrectAnswer ? ', đáp án đúng' : '' %><%= isStudentAnswer ? ', bạn đã chọn' : '' %>">
+                    <div class="option-radio-wrap" aria-hidden="true"></div>
+                    <div class="option-label" aria-hidden="true"><%= String.fromCharCode(65 + idx) %></div>
+                    <div class="option-text"><%= opt %></div>
+                    <% if (isCorrectAnswer) { %>
+                      <span class="option-tag option-tag-correct" aria-label="Đáp án đúng">Đáp án đúng</span>
+                    <% } else if (isStudentAnswer) { %>
+                      <span class="option-tag option-tag-wrong" aria-label="Bạn đã chọn">Bạn đã chọn</span>
+                    <% } %>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+
+            <!-- Fill in blank: student answer -->
+            <% if (question.Question_type === 'FILL_BLANK') { %>
+              <div class="fill-answer-box" aria-label="Câu trả lời của bạn">
+                <div class="fill-answer-box-label">Câu trả lời của bạn</div>
+                <div class="fill-answer-text">
+                  <%= question.Student_answer || '(Để trống)' %>
+                </div>
+              </div>
+            <% } %>
+
+            <!-- Score strip -->
+            <div class="score-strip" aria-label="Kết quả câu hỏi này">
+              <div class="score-strip-icon <%= question.Is_correct ? 'score-strip-icon-correct' : 'score-strip-icon-wrong' %>" aria-hidden="true">
+                <%= question.Is_correct ? '✅' : '❌' %>
+              </div>
+              <div class="score-strip-body">
+                <div class="score-strip-title">
+                  Kết quả câu này: <strong><%= question.Is_correct ? 'Đúng' : 'Sai' %></strong>
+                </div>
+                <div class="score-strip-sub">
+                  Điểm đạt được cho câu hỏi này
+                </div>
+              </div>
+              <div class="score-strip-val <%= question.Is_correct ? 'score-strip-val-correct' : 'score-strip-val-wrong' %>"
+                   aria-label="Điểm: <%= question.Earned_score %>/<%= question.Max_score %>">
+                <%= question.Earned_score %>/<%= question.Max_score %>
+              </div>
+            </div>
+          </article>
+
+          <!-- Correct answer box -->
+          <% if (question.Correct_answers && question.Correct_answers.length > 0) { %>
+            <div class="info-box-row">
+              <div class="info-box info-box-answer" aria-label="Câu trả lời bạn đã chọn">
+                <div class="info-box-label">Bạn đã trả lời</div>
+                <div class="info-box-value">
+                  <%= question.Student_answer || '(Không có đáp án)' %>
+                </div>
+              </div>
+              <div class="info-box info-box-correct" aria-label="Đáp án đúng">
+                <div class="info-box-label">Đáp án đúng</div>
+                <div class="info-box-value">
+                  <%= question.Correct_answers.join(', ') %>
+                </div>
+              </div>
+            </div>
+          <% } %>
+
+        </div><!-- /.review-main -->
+
+      </div><!-- /.review-layout -->
+
+    <% } %>
+
+  </main><!-- /.main-content -->
+
+</div><!-- /.page-root -->
+
+<script>
+  /* ── Keyboard navigation cho sidebar ─────────────────── */
+  document.querySelectorAll('.q-link').forEach(function(link) {
+    link.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.location.href = link.href;
+      }
+    });
+  });
+
+  /* ── Animate score ring khi tải trang ─────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    const rings = document.querySelectorAll('circle[stroke-dasharray]');
+    rings.forEach(function(ring) {
+      const target = ring.getAttribute('stroke-dasharray');
+      const circ = parseFloat(target.split(' ')[1]);
+      ring.setAttribute('stroke-dasharray', '0 ' + circ);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          ring.setAttribute('stroke-dasharray', target);
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>

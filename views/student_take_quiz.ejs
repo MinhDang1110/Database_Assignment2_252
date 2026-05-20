@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Làm bài kiểm tra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS (nhất quán với student_quiz_results.ejs) ── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+      --rose-500:   #f43f5e;
+
+      /* Surfaces */
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      /* Text */
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      /* Borders */
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      /* Shadows */
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      /* Radii */
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .hero-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    /* ─── PAGE WRAPPER ────────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ──────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+      font-family: "Be Vietnam Pro", sans-serif;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.22); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 48px;
+      max-width: 1320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+    .alert-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── BREADCRUMB ──────────────────────────────────── */
+    .breadcrumb-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .breadcrumb-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 600;
+      color: var(--indigo-600); text-decoration: none;
+      padding: 6px 14px; border-radius: 10px;
+      background: white; border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: background 0.16s, border-color 0.16s, transform 0.16s;
+    }
+    .breadcrumb-link:hover {
+      background: var(--bg-soft); border-color: rgba(99,102,241,0.25);
+      transform: translateX(-2px);
+    }
+    .breadcrumb-link svg { width: 14px; height: 14px; }
+    .breadcrumb-sep { color: var(--txt-muted); font-size: 13px; }
+    .breadcrumb-current {
+      font-size: 13.5px; font-weight: 600; color: var(--txt-soft);
+    }
+
+    /* ─── HERO BANNER ─────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl);
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%, rgba(45,212,191,0.12) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none;
+    }
+    .hero-banner::after {
+      content: "";
+      position: absolute; right: -80px; top: -80px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 24px; flex-wrap: wrap;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.30);
+      color: var(--indigo-300); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 14px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal-400);
+      box-shadow: 0 0 8px rgba(45,212,191,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
+      color: #f1f0fe; margin-bottom: 8px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #818cf8, #a78bfa 40%, #2dd4bf);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      color: #7b83a8; font-size: 14px; line-height: 1.75; max-width: 540px;
+    }
+
+    /* Timer & stat group in hero */
+    .hero-score-group {
+      display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .score-ring-card {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-lg); padding: 20px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      min-width: 130px;
+    }
+    .timer-display {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 32px; font-weight: 800; color: #f1f0fe;
+      letter-spacing: -0.04em; line-height: 1;
+    }
+    .timer-display.warning { color: var(--rose-400); animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: 0.6; }
+    }
+    .score-ring-label { font-size: 12px; color: #7b83a8; font-weight: 600; text-align: center; }
+
+    .hero-stat-mini {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 10px 18px;
+    }
+    .hero-stat-mini strong {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 22px; font-weight: 800; color: #f1f0fe; letter-spacing: -0.02em;
+    }
+    .hero-stat-mini span { font-size: 12px; color: #7b83a8; line-height: 1.4; max-width: 64px; }
+
+    /* ─── SECTION HEADER ─────────────────────────────── */
+    .section-head {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .section-label { display: flex; align-items: center; gap: 10px; }
+    .section-label-bar {
+      width: 3px; height: 22px; border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #2dd4bf);
+    }
+    .section-title {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.025em; color: var(--txt-head);
+    }
+    .section-count {
+      background: var(--indigo-100); color: var(--indigo-600);
+      border-radius: 999px; padding: 3px 11px;
+      font-size: 12.5px; font-weight: 700;
+    }
+
+    /* ─── MAIN QUIZ LAYOUT (sidebar + main) ──────────── */
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      align-items: start;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .quiz-sidebar {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+      overflow: hidden; position: sticky; top: 84px;
+    }
+    .sidebar-head {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 12px; font-weight: 700;
+      color: var(--txt-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .sidebar-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+
+    .q-nav-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: var(--r-sm);
+      text-decoration: none; color: var(--txt-body);
+      background: none; border: 1.5px solid transparent;
+      cursor: pointer; width: 100%; text-align: left;
+      transition: background 0.16s, border-color 0.16s;
+      font-family: inherit; font-size: inherit;
+    }
+    .q-nav-btn:hover { background: var(--bg-soft); }
+    .q-nav-btn.answered {
+      background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.18);
+    }
+    .q-nav-btn.current {
+      background: rgba(99,102,241,0.07); border-color: rgba(99,102,241,0.22);
+    }
+
+    .q-num-badge {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 12px; font-weight: 800;
+    }
+    .q-num-badge-default { background: rgba(99,102,241,0.10); color: var(--indigo-500); }
+    .q-num-badge-answered { background: rgba(16,185,129,0.12); color: #10b981; }
+
+    .q-link-info { flex: 1; min-width: 0; }
+    .q-link-title {
+      font-size: 13px; font-weight: 600; color: var(--txt-head);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .q-nav-btn.current .q-link-title { color: var(--indigo-600); }
+    .q-link-sub {
+      font-size: 11.5px; color: var(--txt-muted); margin-top: 1px;
+    }
+
+    /* Progress bar inside sidebar footer */
+    .sidebar-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 600; color: var(--txt-muted); margin-bottom: 8px;
+    }
+    .progress-bar-wrap {
+      height: 6px; border-radius: 3px; background: var(--border);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #6366f1, #2dd4bf);
+      transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* ─── MAIN QUIZ AREA ──────────────────────────────── */
+    .quiz-main { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Question card */
+    .question-card {
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--r-lg); padding: 28px 30px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    }
+    .question-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 2px 2px 0 0;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6 50%, #2dd4bf);
+    }
+
+    .question-meta-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .q-index-chip {
+      background: rgba(99,102,241,0.10); color: var(--indigo-600);
+      border-radius: 8px; padding: 4px 12px;
+      font-size: 12.5px; font-weight: 800;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+    }
+    .q-type-chip {
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: 8px; padding: 4px 11px;
+      font-size: 12px; font-weight: 600; color: var(--txt-muted);
+    }
+    .q-score-chip {
+      margin-left: auto;
+      background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.28);
+      color: #d97706; border-radius: 999px;
+      padding: 5px 14px; font-size: 13px; font-weight: 700;
+    }
+
+    .question-text {
+      font-size: 18px; font-weight: 600; color: var(--txt-head);
+      line-height: 1.6; margin-bottom: 24px; letter-spacing: -0.015em;
+    }
+
+    /* MCQ Options */
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
+    .option-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 16px; border-radius: var(--r-sm);
+      border: 1.5px solid var(--border); background: var(--bg-soft);
+      font-size: 15px; color: var(--txt-body);
+      cursor: pointer;
+      transition: border-color 0.16s, background 0.16s, transform 0.12s;
+    }
+    .option-row:hover {
+      background: rgba(99,102,241,0.05); border-color: rgba(99,102,241,0.28);
+      transform: translateX(2px);
+    }
+    .option-row.selected {
+      background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.42);
+    }
+
+    .option-radio-wrap {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--border); background: white; position: relative;
+      display: grid; place-items: center; transition: border-color 0.16s;
+    }
+    .option-row:hover .option-radio-wrap,
+    .option-row.selected .option-radio-wrap {
+      border-color: #6366f1;
+    }
+    .option-row.selected .option-radio-wrap::after {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: #6366f1; position: absolute;
+    }
+
+    .option-label {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+      background: rgba(99,102,241,0.10); color: var(--indigo-600);
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 800;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      transition: background 0.16s;
+    }
+    .option-row.selected .option-label {
+      background: rgba(99,102,241,0.22); color: var(--indigo-700);
+    }
+
+    .option-text { flex: 1; font-size: 15px; line-height: 1.5; }
+
+    /* Hidden radio input (real form input, visually replaced by option-row) */
+    .option-radio-input { display: none; }
+
+    /* Fill-in-the-blank input */
+    .fill-input-wrap { margin-top: 4px; }
+    .fill-input {
+      width: 100%; padding: 13px 16px;
+      border-radius: var(--r-sm); border: 1.5px solid var(--border);
+      background: var(--bg-soft); font-family: inherit;
+      font-size: 15.5px; font-weight: 500; color: var(--txt-head);
+      outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .fill-input::placeholder { color: var(--txt-muted); font-weight: 400; }
+    .fill-input:focus {
+      border-color: rgba(99,102,241,0.55);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+      background: white;
+    }
+
+    /* ─── NAVIGATION CONTROLS ─────────────────────────── */
+    .nav-controls {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .btn-ctrl {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--r-sm);
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      text-decoration: none;
+    }
+    .btn-ctrl:active { transform: scale(0.97); }
+    .btn-ctrl svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .btn-prev {
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      color: var(--txt-soft);
+    }
+    .btn-prev:hover { background: white; border-color: rgba(99,102,241,0.25); color: var(--indigo-600); }
+
+    .btn-next {
+      background: linear-gradient(135deg, var(--indigo-600), var(--violet-500));
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.35);
+    }
+    .btn-next:hover { box-shadow: 0 8px 24px rgba(99,102,241,0.45); transform: translateY(-1px); }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--emerald-500), #059669);
+      color: white;
+      box-shadow: 0 6px 18px rgba(16,185,129,0.35);
+    }
+    .btn-submit:hover { box-shadow: 0 8px 24px rgba(16,185,129,0.45); transform: translateY(-1px); }
+
+    .ctrl-center-info {
+      font-size: 13px; color: var(--txt-muted); font-weight: 600; text-align: center;
+    }
+    .ctrl-center-info strong { color: var(--indigo-600); }
+
+    /* ─── SUBMIT CONFIRMATION STRIP ──────────────────── */
+    .submit-strip {
+      background: rgba(16,185,129,0.06); border: 1.5px solid rgba(16,185,129,0.22);
+      border-radius: var(--r-md); padding: 16px 22px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .submit-strip-icon {
+      font-size: 24px; flex-shrink: 0;
+    }
+    .submit-strip-body { flex: 1; }
+    .submit-strip-title {
+      font-size: 14px; font-weight: 700; color: #065f46; margin-bottom: 3px;
+    }
+    .submit-strip-sub { font-size: 13px; color: #6b7280; }
+
+    /* ─── EMPTY STATE ─────────────────────────────────── */
+    .empty-card {
+      background: var(--bg-card); border: 1.5px dashed var(--border);
+      border-radius: var(--r-lg); padding: 48px 32px;
+      text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 14px; }
+    .empty-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 17px; font-weight: 700; color: var(--txt-head); margin-bottom: 8px;
+    }
+    .empty-body { font-size: 14px; color: var(--txt-muted); }
+  </style>
+</head>
+
+<body>
+<%
+  const quizData     = typeof quiz         !== 'undefined' ? quiz         : {};
+  const questionList = typeof questions    !== 'undefined' ? questions    : [];
+  const optionList   = typeof options      !== 'undefined' ? options      : [];
+  const attemptNo    = typeof attemptCount !== 'undefined' ? attemptCount : 0;
+  const errorMessage = typeof error        !== 'undefined' ? error        : null;
+  const user         = typeof currentUser  !== 'undefined' ? currentUser  : null;
+%>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+
+    <!-- Brand -->
+    <a href="/student/dashboard" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Learning Management</small>
+      </div>
+    </a>
+
+    <!-- Nav links -->
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/student/dashboard" class="nav-pill" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/student/dashboard" class="nav-pill active" aria-label="Khóa học của tôi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+    </nav>
+
+    <!-- User area -->
+    <div class="nav-right">
+      <% if (user) { %>
+        <div class="user-chip" aria-label="Thông tin tài khoản">
+          <div class="user-avatar" aria-hidden="true">
+            <%= String(user.Display_name || user.Username || 'U').charAt(0).toUpperCase() %>
+          </div>
+          <span class="user-name"><%= user.Display_name || user.Username %></span>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit" aria-label="Đăng xuất">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-row" aria-label="Điều hướng phụ">
+      <a href="/student/courses/<%= quizData.Course_ID %>" class="breadcrumb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Quay lại khóa học
+      </a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current"><%= quizData.Course_name || 'Khóa học' %></span>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current"><%= quizData.Quiz_title || ('Quiz #' + quizData.Quiz_ID) %></span>
+    </nav>
+
+    <!-- ── HERO BANNER ───────────────────────────────── -->
+    <div class="hero-banner" role="region" aria-label="Thông tin bài kiểm tra">
+      <div class="hero-inner">
+        <!-- Left: info -->
+        <div>
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Đang làm bài
+          </div>
+
+          <h1 class="hero-title">
+            <%= quizData.Quiz_title || ('Quiz #' + quizData.Quiz_ID) %>
+            <br>
+            <span class="gradient-text"><%= quizData.Course_name || '' %></span>
+          </h1>
+
+          <p class="hero-subtitle" style="margin-top:10px;">
+            Điểm đạt yêu cầu:
+            <strong style="color:#a5b4fc;">
+              <%= quizData.Pass_score %>/<%= quizData.Max_score %>
+            </strong>
+            &nbsp;·&nbsp;
+            Lần làm: <strong style="color:#a5b4fc;"><%= attemptNo + 1 %>/<%= quizData.Max_attempts %></strong>
+          </p>
+        </div>
+
+        <!-- Right: timer + stats -->
+        <div class="hero-score-group">
+          <div class="score-ring-card" aria-label="Thời gian còn lại">
+            <div class="timer-display" id="timer-display" aria-live="polite">
+              <%
+                const totalSec = (quizData.Duration || 0) * 60;
+                const mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+                const ss = String(totalSec % 60).padStart(2, '0');
+              %>
+              <%= mm %>:<%= ss %>
+            </div>
+            <div class="score-ring-label">Thời gian còn lại</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;justify-content:center;">
+            <div class="hero-stat-mini" aria-label="Số câu hỏi">
+              <strong><%= questionList.length %></strong>
+              <span>Tổng<br>câu hỏi</span>
+            </div>
+            <div class="hero-stat-mini" aria-label="Thời lượng">
+              <strong><%= quizData.Duration || 0 %></strong>
+              <span>Phút<br>làm bài</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.hero-banner -->
+
+    <!-- ── QUIZ LAYOUT ─────────────────────────────────── -->
+    <% if (questionList.length === 0) { %>
+      <div class="empty-card" role="status" aria-label="Không có câu hỏi">
+        <div class="empty-icon" aria-hidden="true">📝</div>
+        <div class="empty-title">Bài kiểm tra chưa có câu hỏi</div>
+        <div class="empty-body">Vui lòng liên hệ giáo viên để được hỗ trợ.</div>
+      </div>
+    <% } else { %>
+
+      <!-- Section header -->
+      <div class="section-head" style="margin-bottom:16px;">
+        <div class="section-label">
+          <div class="section-label-bar" aria-hidden="true"></div>
+          <h2 class="section-title">Câu hỏi</h2>
+          <span class="section-count"><%= questionList.length %> câu</span>
+        </div>
+      </div>
+
+      <form
+        id="quiz-form"
+        method="POST"
+        action="/student/quizzes/<%= quizData.Quiz_ID %>/submit"
+      >
+
+        <div class="quiz-layout">
+
+          <!-- ─ SIDEBAR: question navigator ───────────── -->
+          <aside class="quiz-sidebar" aria-label="Danh sách câu hỏi">
+            <div class="sidebar-head">Câu hỏi</div>
+            <div class="sidebar-list" role="list" id="sidebar-list">
+              <% questionList.forEach((q, idx) => { %>
+                <button
+                  type="button"
+                  class="q-nav-btn<%= idx === 0 ? ' current' : '' %>"
+                  data-idx="<%= idx %>"
+                  role="listitem"
+                  aria-label="Câu hỏi <%= idx + 1 %>"
+                  onclick="goToQuestion(<%= idx %>)"
+                >
+                  <div class="q-num-badge q-num-badge-default" id="badge-<%= idx %>" aria-hidden="true">
+                    <%= idx + 1 %>
+                  </div>
+                  <div class="q-link-info">
+                    <div class="q-link-title">Câu <%= idx + 1 %></div>
+                    <div class="q-link-sub" id="status-<%= idx %>">Chưa trả lời</div>
+                  </div>
+                </button>
+              <% }) %>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="sidebar-footer">
+              <div class="progress-label">
+                <span>Tiến độ</span>
+                <span id="progress-text">0/<%= questionList.length %></span>
+              </div>
+              <div class="progress-bar-wrap" aria-label="Tiến độ làm bài">
+                <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- ─ MAIN: question cards ───────────────────── -->
+          <div class="quiz-main" id="quiz-main">
+
+            <% questionList.forEach((q, idx) => {
+              const score = q.Question_type === 'MCQ' ? q.MCQ_score : q.FITB_score;
+              const questionOptions = optionList.filter(o => o.Question_ID === q.Question_ID);
+            %>
+              <div
+                class="question-card"
+                id="question-card-<%= idx %>"
+                style="<%= idx !== 0 ? 'display:none;' : '' %>"
+                role="article"
+                aria-label="Câu hỏi <%= idx + 1 %>"
+              >
+                <!-- Meta row -->
+                <div class="question-meta-row">
+                  <span class="q-index-chip">Câu <%= idx + 1 %></span>
+                  <span class="q-type-chip">
+                    <%= q.Question_type === 'MCQ' ? 'Trắc nghiệm' : 'Điền vào chỗ trống' %>
+                  </span>
+                  <span class="q-score-chip" aria-label="Điểm: <%= score %>">
+                    <%= score %> điểm
+                  </span>
+                </div>
+
+                <!-- Question text -->
+                <div class="question-text"><%= q.Content %></div>
+
+                <!-- MCQ options -->
+                <% if (q.Question_type === 'MCQ') { %>
+                  <div class="options-list" role="radiogroup" aria-label="Chọn đáp án">
+                    <% questionOptions.forEach((o, oi) => { %>
+                      <label
+                        class="option-row"
+                        id="option-row-<%= q.Question_ID %>-<%= oi %>"
+                        aria-label="Lựa chọn <%= String.fromCharCode(65 + oi) %>: <%= o.Option_text %>"
+                      >
+                        <input
+                          class="option-radio-input"
+                          type="radio"
+                          name="answer_<%= q.Question_ID %>"
+                          value="<%= o.Option_text %>"
+                          data-qidx="<%= idx %>"
+                          data-qid="<%= q.Question_ID %>"
+                          onchange="onAnswerChange(this)"
+                          required
+                        >
+                        <div class="option-radio-wrap" aria-hidden="true"></div>
+                        <div class="option-label" aria-hidden="true"><%= String.fromCharCode(65 + oi) %></div>
+                        <div class="option-text"><%= o.Option_text %></div>
+                      </label>
+                    <% }) %>
+                  </div>
+                <% } %>
+
+                <!-- Fill-in-the-blank -->
+                <% if (q.Question_type === 'FILL_BLANK') { %>
+                  <div class="fill-input-wrap">
+                    <input
+                      type="text"
+                      name="answer_<%= q.Question_ID %>"
+                      class="fill-input"
+                      placeholder="Nhập câu trả lời của bạn..."
+                      data-qidx="<%= idx %>"
+                      data-qid="<%= q.Question_ID %>"
+                      oninput="onFillChange(this)"
+                      required
+                      aria-label="Câu trả lời câu <%= idx + 1 %>"
+                    >
+                  </div>
+                <% } %>
+              </div>
+            <% }) %>
+
+            <!-- Navigation controls -->
+            <div class="nav-controls" role="navigation" aria-label="Điều hướng câu hỏi">
+              <button
+                type="button"
+                class="btn-ctrl btn-prev"
+                id="btn-prev"
+                onclick="prevQuestion()"
+                aria-label="Câu trước"
+                style="visibility:hidden;"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                Câu trước
+              </button>
+
+              <div class="ctrl-center-info" aria-live="polite">
+                Câu <strong id="ctrl-current">1</strong> / <%= questionList.length %>
+              </div>
+
+              <button
+                type="button"
+                class="btn-ctrl btn-next"
+                id="btn-next"
+                onclick="nextQuestion()"
+                aria-label="Câu tiếp theo"
+              >
+                Câu tiếp theo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <!-- Submit strip -->
+            <div class="submit-strip" id="submit-strip" style="display:none;" role="status">
+              <div class="submit-strip-icon" aria-hidden="true">✅</div>
+              <div class="submit-strip-body">
+                <div class="submit-strip-title">Bạn đã trả lời tất cả câu hỏi!</div>
+                <div class="submit-strip-sub">Kiểm tra lại các câu trả lời trước khi nộp bài.</div>
+              </div>
+              <button
+                type="submit"
+                class="btn-ctrl btn-submit"
+                onclick="return confirmSubmit()"
+                aria-label="Nộp bài"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Nộp bài
+              </button>
+            </div>
+
+          </div><!-- /.quiz-main -->
+
+        </div><!-- /.quiz-layout -->
+
+      </form>
+
+    <% } %>
+
+  </main><!-- /.main-content -->
+
+</div><!-- /.page-root -->
+
+<script>
+  /* ── State ─────────────────────────────────────── */
+  const TOTAL = <%= questionList.length %>;
+  let currentIdx = 0;
+  const answered = new Array(TOTAL).fill(false);
+
+  /* ── Timer ─────────────────────────────────────── */
+  let remainingSec = <%= (quizData.Duration || 0) * 60 %>;
+  const timerEl = document.getElementById('timer-display');
+
+  function formatTime(s) {
+    const m = String(Math.floor(s / 60)).padStart(2, '0');
+    const sec = String(s % 60).padStart(2, '0');
+    return m + ':' + sec;
+  }
+
+  if (TOTAL > 0 && remainingSec > 0) {
+    const timerInterval = setInterval(function () {
+      remainingSec--;
+      timerEl.textContent = formatTime(remainingSec);
+      if (remainingSec <= 60) timerEl.classList.add('warning');
+      if (remainingSec <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('quiz-form').submit();
+      }
+    }, 1000);
+  }
+
+  /* ── Navigation ─────────────────────────────────── */
+  function goToQuestion(idx) {
+    if (idx < 0 || idx >= TOTAL) return;
+
+    document.getElementById('question-card-' + currentIdx).style.display = 'none';
+    document.querySelectorAll('.q-nav-btn')[currentIdx].classList.remove('current');
+
+    currentIdx = idx;
+
+    document.getElementById('question-card-' + currentIdx).style.display = '';
+    const navBtns = document.querySelectorAll('.q-nav-btn');
+    navBtns.forEach(function (b) { b.classList.remove('current'); });
+    navBtns[currentIdx].classList.add('current');
+
+    document.getElementById('ctrl-current').textContent = currentIdx + 1;
+    document.getElementById('btn-prev').style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
+    document.getElementById('btn-next').style.display = currentIdx === TOTAL - 1 ? 'none' : '';
+  }
+
+  function nextQuestion() { goToQuestion(currentIdx + 1); }
+  function prevQuestion() { goToQuestion(currentIdx - 1); }
+
+  /* ── Answer tracking ────────────────────────────── */
+  function markAnswered(qidx) {
+    if (answered[qidx]) return;
+    answered[qidx] = true;
+
+    const badge = document.getElementById('badge-' + qidx);
+    const statusEl = document.getElementById('status-' + qidx);
+    const navBtn = document.querySelectorAll('.q-nav-btn')[qidx];
+
+    badge.classList.remove('q-num-badge-default');
+    badge.classList.add('q-num-badge-answered');
+    statusEl.textContent = '✓ Đã trả lời';
+    navBtn.classList.add('answered');
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const count = answered.filter(Boolean).length;
+    document.getElementById('progress-text').textContent = count + '/' + TOTAL;
+    document.getElementById('progress-bar').style.width = Math.round(count / TOTAL * 100) + '%';
+    document.getElementById('submit-strip').style.display = count === TOTAL ? 'flex' : 'none';
+  }
+
+  function onAnswerChange(input) {
+    const qidx = parseInt(input.dataset.qidx);
+    /* Update selected styling */
+    const rows = input.closest('.options-list').querySelectorAll('.option-row');
+    rows.forEach(function (r) { r.classList.remove('selected'); });
+    input.closest('.option-row').classList.add('selected');
+    markAnswered(qidx);
+  }
+
+  function onFillChange(input) {
+    const qidx = parseInt(input.dataset.qidx);
+    if (input.value.trim().length > 0) markAnswered(qidx);
+  }
+
+  function confirmSubmit() {
+    const unanswered = TOTAL - answered.filter(Boolean).length;
+    if (unanswered > 0) {
+      return confirm('Bạn còn ' + unanswered + ' câu chưa trả lời. Bạn có chắc chắn muốn nộp bài?');
+    }
+    return confirm('Bạn có chắc chắn muốn nộp bài?');
+  }
+
+  /* ── Keyboard navigation ────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' && e.target.type === 'text') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextQuestion();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevQuestion();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – <%= course.Course_name %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS (nhất quán với profile.ejs & student_dashboard.ejs) ── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+
+      /* Surfaces */
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      /* Text */
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      /* Borders */
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      /* Shadows */
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      /* Radii */
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .course-title-main {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    /* ─── PAGE WRAPPER ────────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV (giống hệt dashboard & profile) ─────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+      font-family: "Be Vietnam Pro", sans-serif;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.13); color: #fff; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.24); color: #fff; }
+
+    /* ─── MAIN CONTENT ─────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 52px;
+      max-width: 1240px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── BREADCRUMB ───────────────────────────────────── */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13.5px; color: var(--txt-soft);
+      margin-bottom: 22px; flex-wrap: wrap;
+    }
+    .breadcrumb a {
+      color: var(--indigo-500); text-decoration: none;
+      font-weight: 500; transition: color 0.15s;
+    }
+    .breadcrumb a:hover { color: var(--indigo-600); text-decoration: underline; }
+    .breadcrumb-sep { color: var(--txt-muted); }
+    .breadcrumb-current { color: var(--txt-head); font-weight: 600; }
+
+    /* ─── ALERTS ────────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent; font-size: 14px;
+      line-height: 1.55; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+
+    /* ─── COURSE HERO PANEL ─────────────────────────────── */
+    .course-hero {
+      border-radius: var(--r-2xl);
+      padding: 36px 40px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%,   rgba(99,102,241,0.28) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 100% at 100% 100%, rgba(139,92,246,0.20) 0%, transparent 50%),
+        #0d0b1e;
+      box-shadow: var(--shadow-lg);
+    }
+    .course-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid; gap: 24px;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+    .hero-left { min-width: 0; }
+
+    /* Breadcrumb on dark hero */
+    .hero-crumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .hero-crumb a {
+      color: var(--indigo-300); text-decoration: none;
+      font-weight: 500; transition: color 0.15s;
+    }
+    .hero-crumb a:hover { color: #c7d2fe; }
+    .hero-crumb-sep { color: rgba(255,255,255,0.30); }
+    .hero-crumb-curr { color: rgba(255,255,255,0.70); }
+
+    .course-title-main {
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 800; color: #f1f0fe;
+      line-height: 1.2; margin-bottom: 10px;
+    }
+    .course-desc-hero {
+      color: rgba(255,255,255,0.65);
+      font-size: 14.5px; line-height: 1.65;
+      max-width: 680px; margin-bottom: 22px;
+    }
+
+    .meta-chips {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px;
+    }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; padding: 5px 12px;
+      font-size: 12.5px; font-weight: 600;
+      color: rgba(255,255,255,0.80);
+      backdrop-filter: blur(8px);
+    }
+    .meta-chip svg { width: 13px; height: 13px; opacity: 0.7; }
+
+    /* Hero status badge */
+    .status-hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .status-hero-badge.active   { background: rgba(99,102,241,0.22); border: 1px solid rgba(99,102,241,0.35); color: var(--indigo-300); }
+    .status-hero-badge.completed{ background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.30); color: #6ee7b7; }
+    .status-hero-badge.dropped  { background: rgba(251,113,133,0.18); border: 1px solid rgba(251,113,133,0.28); color: #fda4af; }
+
+    /* Hero right — CTA */
+    .hero-right {
+      display: flex; flex-direction: column;
+      align-items: flex-end; gap: 12px; flex-shrink: 0;
+    }
+    .btn-resume {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; font-family: inherit; font-size: 14.5px; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none;
+      box-shadow: var(--shadow-indigo);
+      transition: transform 0.18s, box-shadow 0.18s;
+      white-space: nowrap;
+    }
+    .btn-resume:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(99,102,241,0.38);
+    }
+    .btn-resume:active { transform: scale(0.97); }
+    .btn-resume svg { width: 16px; height: 16px; }
+
+    .hero-score-box {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: var(--r-sm);
+      padding: 12px 18px;
+      text-align: center;
+      min-width: 100px;
+    }
+    .hero-score-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .hero-score-value {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 28px; font-weight: 800; color: #f1f0fe;
+      line-height: 1.1; margin-top: 3px;
+    }
+    .hero-score-sub { font-size: 11px; color: rgba(255,255,255,0.40); margin-top: 2px; }
+
+    /* ─── PROGRESS CARD ─────────────────────────────────── */
+    .progress-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .progress-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; gap: 12px; flex-wrap: wrap;
+    }
+    .progress-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--txt-head);
+    }
+    .progress-pct {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 20px; font-weight: 800;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .progress-track {
+      height: 10px; background: var(--indigo-100);
+      border-radius: 999px; overflow: hidden; margin-bottom: 18px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #2dd4bf);
+      border-radius: 999px;
+      transition: width 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .pstat {
+      background: var(--bg-soft);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .pstat-label { font-size: 11.5px; color: var(--txt-soft); font-weight: 500; margin-bottom: 4px; }
+    .pstat-val {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 18px; font-weight: 800; color: var(--txt-head);
+    }
+    .pstat-sub { font-size: 11px; color: var(--txt-muted); margin-top: 1px; }
+
+    /* ─── SECTION LABEL (như dashboard) ────────────────── */
+    .section-label {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .section-label-bar {
+      width: 4px; height: 22px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #8b5cf6);
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 20px; font-weight: 800; color: var(--txt-head);
+    }
+
+    /* ─── COURSE INFO PANEL ─────────────────────────────── */
+    .info-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .info-panel-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .info-panel-head:hover { background: var(--bg-soft); }
+    .info-panel-icon {
+      width: 32px; height: 32px; border-radius: var(--r-xs);
+      display: grid; place-items: center; flex-shrink: 0;
+      font-size: 15px;
+    }
+    .icon-info   { background: var(--indigo-100); color: var(--indigo-600); }
+    .icon-lecture{ background: #e0f2fe; color: #0369a1; }
+    .icon-quiz   { background: #fef3c7; color: #b45309; }
+
+    .info-panel-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--txt-head); flex: 1;
+    }
+    .info-panel-badge {
+      background: var(--indigo-100); color: var(--indigo-600);
+      border-radius: 999px; padding: 3px 10px;
+      font-size: 12px; font-weight: 700;
+    }
+    .chevron {
+      width: 18px; height: 18px; color: var(--txt-muted);
+      transition: transform 0.22s ease;
+      flex-shrink: 0;
+    }
+    .info-panel.collapsed .chevron { transform: rotate(-90deg); }
+    .info-panel-body { display: block; }
+    .info-panel.collapsed .info-panel-body { display: none; }
+
+    /* General info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0;
+      padding: 0;
+    }
+    .info-cell {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border-soft);
+      border-right: 1px solid var(--border-soft);
+    }
+    .info-cell:last-child { border-right: none; }
+    .info-cell-label { font-size: 11.5px; color: var(--txt-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .info-cell-value { font-size: 14.5px; font-weight: 600; color: var(--txt-head); }
+
+    /* ─── SECTION / LECTURE ACCORDION ──────────────────── */
+    .section-block {
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .section-block:last-child { border-bottom: none; }
+
+    .section-block-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 22px;
+      background: linear-gradient(90deg, rgba(99,102,241,0.04), transparent);
+      cursor: pointer; user-select: none;
+      transition: background 0.15s;
+    }
+    .section-block-head:hover { background: rgba(99,102,241,0.07); }
+
+    .section-num {
+      width: 26px; height: 26px; border-radius: 8px;
+      background: var(--indigo-100); color: var(--indigo-600);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .section-block-name {
+      font-weight: 700; font-size: 14px;
+      color: var(--txt-head); flex: 1;
+    }
+    .section-block-count {
+      font-size: 12px; color: var(--txt-muted); font-weight: 500;
+    }
+    .chevron-sm {
+      width: 15px; height: 15px; color: var(--txt-muted);
+      transition: transform 0.2s; flex-shrink: 0;
+    }
+    .section-block.collapsed .chevron-sm { transform: rotate(-90deg); }
+    .section-block-body { display: block; }
+    .section-block.collapsed .section-block-body { display: none; }
+
+    /* ─── LECTURE ITEM ──────────────────────────────────── */
+    .lecture-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border-soft);
+      transition: background 0.15s;
+    }
+    .lecture-item:hover { background: var(--bg-soft); }
+
+    .lecture-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 13px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .lec-icon-default  { background: var(--indigo-100); color: var(--indigo-600); }
+    .lec-icon-done     { background: #dcfce7; color: #16a34a; }
+
+    .lecture-body { flex: 1; min-width: 0; }
+    .lecture-title {
+      font-size: 14.5px; font-weight: 600;
+      color: var(--txt-head); margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .lecture-meta { font-size: 12.5px; color: var(--txt-soft); margin-bottom: 6px; }
+
+    /* Material links */
+    .material-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+    .material-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--indigo-100); color: var(--indigo-600);
+      font-size: 12px; font-weight: 600;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .material-link:hover { background: #c7d2fe; }
+    .material-link svg { width: 12px; height: 12px; }
+
+    .lecture-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* Status badges (lecture) */
+    .lec-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 700;
+    }
+    .lec-badge-done { background: #dcfce7; color: #16a34a; }
+    .lec-badge-todo { background: var(--bg-soft); border: 1px solid var(--border); color: var(--txt-muted); }
+
+    .btn-complete {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 13px; border-radius: var(--r-xs);
+      background: var(--bg-soft); color: var(--indigo-600);
+      border: 1px solid var(--indigo-100);
+      font-family: inherit; font-size: 12.5px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.15s, color 0.15s, transform 0.15s;
+    }
+    .btn-complete:hover {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; border-color: transparent;
+      transform: translateY(-1px);
+    }
+    .btn-complete:active { transform: scale(0.97); }
+
+    /* ─── QUIZ ITEM ─────────────────────────────────────── */
+    .quiz-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border-soft);
+      transition: background 0.15s;
+    }
+    .quiz-item:hover { background: var(--bg-soft); }
+    .quiz-icon-box {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #fef3c7; color: #b45309;
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 13px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+    }
+    .quiz-body { flex: 1; min-width: 0; }
+    .quiz-title { font-size: 14.5px; font-weight: 700; color: var(--txt-head); margin-bottom: 4px; }
+    .quiz-meta { font-size: 12.5px; color: var(--txt-soft); line-height: 1.6; }
+    .quiz-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* Quiz status badges */
+    .quiz-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+    .quiz-badge-passed   { background: #dcfce7; color: #16a34a; }
+    .quiz-badge-failed   { background: #fff1f2; color: #be123c; }
+    .quiz-badge-pending  { background: var(--bg-soft); border: 1px solid var(--border); color: var(--txt-muted); }
+
+    /* Primary button (take quiz) */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: var(--r-xs);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; font-family: inherit; font-size: 13px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.28);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.36); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: var(--r-xs);
+      background: var(--bg-soft); color: var(--txt-body);
+      border: 1px solid var(--border);
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .btn-secondary:hover { background: var(--indigo-100); color: var(--indigo-600); border-color: var(--indigo-300); transform: translateY(-1px); }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    /* ─── EMPTY STATE ───────────────────────────────────── */
+    .empty-state {
+      padding: 32px; text-align: center;
+      color: var(--txt-muted); font-size: 14px;
+    }
+    .empty-state-icon { font-size: 28px; margin-bottom: 8px; }
+
+    /* ─── FLOATING RESUME BAR (mobile) ─────────────────── */
+    .resume-fab {
+      display: none;
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main-content { padding: 20px 16px 80px; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-right { align-items: flex-start; flex-direction: row; }
+      .course-hero { padding: 24px 20px; border-radius: var(--r-xl); }
+      .progress-stats { grid-template-columns: repeat(2, 1fr); }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+      .lecture-item, .quiz-item { flex-direction: column; }
+      .lecture-actions, .quiz-actions { flex-direction: row; width: 100%; }
+      .resume-fab { display: block; }
+      .btn-resume.desktop-only { display: none; }
+      .nav-center { display: none; }
+    }
+    @media (max-width: 480px) {
+      .topnav { padding: 0 16px; }
+      .nav-wordmark small { display: none; }
+      .progress-stats { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+
+<%
+  /* ── Dữ liệu động từ backend ──────────────────────────
+     Các biến giả định được truyền vào từ route Express:
+       course         : Object – thông tin khóa học & enrollment
+       lectures       : Array  – danh sách bài giảng (có Section_order, Section_name, Interaction_status)
+       materials      : Array  – tài liệu đính kèm theo Lecture_ID
+       quizzes        : Array  – danh sách quiz (có Quiz_status, Attempt_count, Best_score)
+       progress       : Object – { progressPercent, completedLectures, totalLectures, passedQuizzes, totalQuizzes, completedItems, totalItems }
+       user           : Object – thông tin người dùng hiện tại
+       success        : String|null
+       error          : String|null
+     ──────────────────────────────────────────────────── */
+
+  const courseData    = typeof course    !== 'undefined' ? course    : {};
+  const lectureList   = typeof lectures  !== 'undefined' ? lectures  : [];
+  const materialList  = typeof materials !== 'undefined' ? materials : [];
+  const quizList      = typeof quizzes   !== 'undefined' ? quizzes   : [];
+  const progressData  = typeof progress  !== 'undefined' ? progress  : {};
+  const currentUser   = typeof user      !== 'undefined' ? user      : {};
+  const successMsg    = typeof success   !== 'undefined' ? success   : null;
+  const errorMsg      = typeof error     !== 'undefined' ? error     : null;
+
+  /* Format ngày */
+  function fmtDate(v) {
+    if (!v) return '—';
+    return new Date(v).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }
+
+  /* Format ngày + giờ */
+  function fmtDT(v) {
+    if (!v) return '—';
+    return new Date(v).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+
+  /* Gom bài giảng theo học phần */
+  const sectionMap = {};
+  lectureList.forEach(l => {
+    const key = String(l.Section_order || 0);
+    if (!sectionMap[key]) {
+      sectionMap[key] = {
+        Section_order: l.Section_order,
+        Section_name: l.Section_name || ('học phần ' + l.Section_order),
+        lectures: []
+      };
+    }
+    sectionMap[key].lectures.push(l);
+  });
+  const sectionList = Object.values(sectionMap).sort((a,b) => Number(a.Section_order||0) - Number(b.Section_order||0));
+
+/* Tìm bài chưa hoàn thành đầu tiên để "Tiếp tục học" */
+  let resumeLecture = null;
+  let resumeSectionId = null;
+  for (let i = 0; i < sectionList.length; i++) {
+    const sec = sectionList[i];
+    const found = sec.lectures.find(l => l.Interaction_status !== 'Completed');
+    if (found) { 
+      resumeLecture = found; 
+      resumeSectionId = 'sec-' + i;
+      break; 
+    }
+  }
+
+  /* Tên đầu tiên của user */
+  const userInitial = String(currentUser.Full_name || currentUser.Email || 'U').charAt(0).toUpperCase();
+
+  /* Trạng thái enrollment */
+  const enrollStatus = courseData.Enroll_status || 'Active';
+  const pct = progressData.progressPercent || 0;
+%>
+
+<body>
+<div class="page-root">
+
+  <!-- ══ TOPNAV ══════════════════════════════════════════ -->
+  <nav class="topnav" aria-label="Điều hướng chính">
+    <a href="/student/dashboard" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Learning Management System</small>
+      </div>
+    </a>
+
+    <div class="nav-center">
+      <a href="/student/dashboard" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Trang chính
+      </a>
+      <a href="/student/dashboard" class="nav-pill active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Khóa học
+      </a>
+      <a href="/profile" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Hồ sơ
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <!-- Dữ liệu động: tên người dùng -->
+      <div class="user-chip" aria-label="Tài khoản">
+        <div class="user-avatar" aria-hidden="true"><%= userInitial %></div>
+        <span class="user-name"><%= currentUser.Full_name || currentUser.Email || 'Học viên' %></span>
+      </div>
+
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc muốn đăng xuất?');">
+        <button type="submit" class="btn-nav btn-nav-danger" aria-label="Đăng xuất">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- ══ MAIN ════════════════════════════════════════════ -->
+  <main class="main-content" id="main">
+
+    <!-- Alerts -->
+    <% if (successMsg) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span><%= successMsg %></span>
+      </div>
+    <% } %>
+    <% if (errorMsg) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span><%= errorMsg %></span>
+      </div>
+    <% } %>
+
+    <!-- ── COURSE HERO ──────────────────────────────── -->
+    <div class="course-hero" aria-label="Thông tin khóa học">
+      <div class="hero-inner">
+
+        <div class="hero-left">
+          <!-- Breadcrumb trên nền tối -->
+          <nav class="hero-crumb" aria-label="Điều hướng trang">
+            <a href="/student/dashboard">Dashboard</a>
+            <span class="hero-crumb-sep" aria-hidden="true">/</span>
+            <a href="/student/dashboard">Khóa học của tôi</a>
+            <span class="hero-crumb-sep" aria-hidden="true">/</span>
+            <span class="hero-crumb-curr"><%= courseData.Course_name %></span>
+          </nav>
+
+          <!-- Tên khóa học – dữ liệu động -->
+          <h1 class="course-title-main"><%= courseData.Course_name %></h1>
+
+          <!-- Mô tả ngắn – dữ liệu động -->
+          <p class="course-desc-hero"><%= courseData.Description || 'Không có mô tả khóa học.' %></p>
+
+          <!-- Meta chips -->
+          <div class="meta-chips">
+            <span class="meta-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <!-- Giảng viên – dữ liệu động -->
+              <%= courseData.Lecturer_name || 'Chưa cập nhật' %>
+            </span>
+            <span class="meta-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <%= courseData.Subject_name || '—' %>
+            </span>
+            <span class="meta-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <%= courseData.Dept_name || '—' %>
+            </span>
+            <span class="meta-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <!-- Ngày bắt đầu – kết thúc – dữ liệu động -->
+              <%= fmtDate(courseData.Start_date) %> → <%= fmtDate(courseData.End_date) %>
+            </span>
+            <!-- Trạng thái enrollment – dữ liệu động -->
+            <% if (enrollStatus === 'Completed') { %>
+              <span class="status-hero-badge completed">✓ Đã hoàn thành</span>
+            <% } else if (enrollStatus === 'Dropped') { %>
+              <span class="status-hero-badge dropped">✕ Đã hủy</span>
+            <% } else { %>
+              <span class="status-hero-badge active">⬤ Đang tham gia</span>
+            <% } %>
+          </div>
+        </div><!-- /.hero-left -->
+
+        <div class="hero-right">
+          <!-- Nút Tiếp tục học – dữ liệu động: link bài học gần nhất -->
+<% if (resumeLecture) { %>
+  <button type="button" onclick="scrollToLecture('<%= resumeLecture.Lecture_ID %>', '<%= resumeSectionId %>')" class="btn-resume desktop-only" aria-label="Tiếp tục học từ bài: <%= resumeLecture.Title %>">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Tiếp tục học
+  </button>
+<% } %>
+
+          <!-- Điểm cuối – dữ liệu động -->
+          <div class="hero-score-box">
+            <div class="hero-score-label">Điểm cuối</div>
+            <div class="hero-score-value">
+              <%= courseData.Final_score != null ? courseData.Final_score : '—' %>
+            </div>
+            <div class="hero-score-sub">Kết quả khoá học</div>
+          </div>
+        </div>
+
+      </div><!-- /.hero-inner -->
+    </div><!-- /.course-hero -->
+
+    <!-- ── PROGRESS CARD ────────────────────────────── -->
+    <div class="progress-card" aria-label="Tiến độ học tập">
+      <div class="progress-header">
+        <div class="progress-title">Tiến độ khóa học</div>
+        <!-- Phần trăm – dữ liệu động -->
+        <div class="progress-pct"><%= pct %>%</div>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100" aria-label="Tiến độ <%= pct %>%">
+        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+      <!-- Stats grid – dữ liệu động -->
+      <div class="progress-stats">
+        <div class="pstat">
+          <div class="pstat-label">Bài giảng</div>
+          <div class="pstat-val"><%= progressData.completedLectures || 0 %>/<%= progressData.totalLectures || 0 %></div>
+          <div class="pstat-sub">Đã hoàn thành</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-label">Bài kiểm tra</div>
+          <div class="pstat-val"><%= progressData.passedQuizzes || 0 %>/<%= progressData.totalQuizzes || 0 %></div>
+          <div class="pstat-sub">Đã đạt</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-label">Tổng mục</div>
+          <div class="pstat-val"><%= progressData.completedItems || 0 %>/<%= progressData.totalItems || 0 %></div>
+          <div class="pstat-sub">Đã hoàn thành</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-label">Tín chỉ</div>
+          <div class="pstat-val"><%= courseData.Credits || '—' %></div>
+          <div class="pstat-sub">Tín chỉ khóa học</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── THÔNG TIN CHUNG ──────────────────────────── -->
+    <div class="info-panel" id="panel-info">
+      <div class="info-panel-head" onclick="togglePanel('panel-info')" aria-expanded="true" role="button" tabindex="0">
+        <div class="info-panel-icon icon-info" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="info-panel-title">Thông tin chung</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+      <div class="info-panel-body">
+        <!-- Dữ liệu động: thông tin chi tiết khóa học -->
+        <div class="info-grid">
+          <div class="info-cell">
+            <div class="info-cell-label">Course ID</div>
+            <div class="info-cell-value">#<%= courseData.Course_ID %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Môn học</div>
+            <div class="info-cell-value"><%= courseData.Subject_name || '—' %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Khoa</div>
+            <div class="info-cell-value"><%= courseData.Dept_name || '—' %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Giảng viên</div>
+            <div class="info-cell-value"><%= courseData.Lecturer_name || '—' %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Tín chỉ</div>
+            <div class="info-cell-value"><%= courseData.Credits || '—' %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Bắt đầu</div>
+            <div class="info-cell-value"><%= fmtDate(courseData.Start_date) %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Kết thúc</div>
+            <div class="info-cell-value"><%= fmtDate(courseData.End_date) %></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">Trạng thái</div>
+            <div class="info-cell-value">
+              <% if (enrollStatus === 'Completed') { %>Đã hoàn thành
+              <% } else if (enrollStatus === 'Dropped') { %>Đã hủy
+              <% } else { %>Đang tham gia<% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DANH SÁCH BÀI GIẢNG ─────────────────────── -->
+    <div style="margin-bottom:16px;">
+      <div class="section-label">
+        <div class="section-label-bar" aria-hidden="true"></div>
+        <h2 class="section-title">Nội dung khóa học</h2>
+      </div>
+    </div>
+
+    <div class="info-panel" id="panel-lectures">
+      <div class="info-panel-head" onclick="togglePanel('panel-lectures')" aria-expanded="true" role="button" tabindex="0">
+        <div class="info-panel-icon icon-lecture" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        <div class="info-panel-title">Bài giảng</div>
+        <!-- Số bài giảng – dữ liệu động -->
+        <span class="info-panel-badge"><%= lectureList.length %> bài</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+
+      <div class="info-panel-body">
+        <% if (sectionList.length === 0) { %>
+          <div class="empty-state">
+            <div class="empty-state-icon" aria-hidden="true">📖</div>
+            Khóa học chưa có bài giảng nào.
+          </div>
+        <% } %>
+
+        <!-- Dữ liệu động: vòng lặp qua từng học phần -->
+        <% sectionList.forEach((sec, sIdx) => {
+          const secDone = sec.lectures.filter(l => l.Interaction_status === 'Completed').length;
+        %>
+          <div class="section-block" id="sec-<%= sIdx %>">
+            <div class="section-block-head" onclick="toggleSection('sec-<%= sIdx %>')" role="button" tabindex="0" aria-expanded="true">
+              <div class="section-num"><%= sec.Section_order %></div>
+              <div class="section-block-name"><%= sec.Section_name %></div>
+              <div class="section-block-count"><%= secDone %>/<%= sec.lectures.length %> hoàn thành</div>
+              <svg class="chevron-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+            </div>
+
+            <div class="section-block-body">
+              <!-- Dữ liệu động: vòng lặp qua từng bài giảng trong học phần -->
+              <% sec.lectures.forEach(l => {
+                const lDone = l.Interaction_status === 'Completed';
+                const links  = materialList.filter(m => Number(m.Lecture_ID) === Number(l.Lecture_ID));
+              %>
+                <div class="lecture-item" id="lecture-<%= l.Lecture_ID %>">
+                  <div class="lecture-icon <%= lDone ? 'lec-icon-done' : 'lec-icon-default' %>" aria-hidden="true">
+                    <% if (lDone) { %>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    <% } else { %>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <% } %>
+                  </div>
+
+                  <div class="lecture-body">
+                    <!-- Dữ liệu động: tiêu đề bài giảng -->
+                    <div class="lecture-title"><%= l.Title %></div>
+                    <div class="lecture-meta">Ngày tạo: <%= fmtDate(l.Created_at) %></div>
+                    <!-- Dữ liệu động: tài liệu đính kèm -->
+                    <% if (links.length > 0) { %>
+                      <div class="material-links">
+                        <% links.forEach((m, idx) => { %>
+                          <a href="<%= m.Link %>" target="_blank" rel="noopener" class="material-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Tài liệu <%= idx + 1 %>
+                          </a>
+                        <% }) %>
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <div class="lecture-actions">
+                    <% if (lDone) { %>
+                      <span class="lec-badge lec-badge-done" aria-label="Đã hoàn thành">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Hoàn thành
+                      </span>
+                    <% } else { %>
+                      <span class="lec-badge lec-badge-todo" aria-label="Chưa hoàn thành">Chưa xong</span>
+                      <!-- Dữ liệu động: action đánh dấu hoàn thành -->
+                      <form method="POST" action="/student/lectures/<%= l.Lecture_ID %>/complete" style="display:inline">
+                        <button type="submit" class="btn-complete" aria-label="Đánh dấu hoàn thành bài <%= l.Title %>">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                          Hoàn thành
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div><!-- /#panel-lectures -->
+
+    <!-- ── QUIZZES ──────────────────────────────────── -->
+    <div class="info-panel" id="panel-quizzes" style="margin-top:20px;">
+      <div class="info-panel-head" onclick="togglePanel('panel-quizzes')" aria-expanded="true" role="button" tabindex="0">
+        <div class="info-panel-icon icon-quiz" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="info-panel-title">Bài kiểm tra (Quiz)</div>
+        <!-- Số quiz – dữ liệu động -->
+        <span class="info-panel-badge"><%= quizList.length %> quiz</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+
+      <div class="info-panel-body">
+        <% if (quizList.length === 0) { %>
+          <div class="empty-state">
+            <div class="empty-state-icon" aria-hidden="true">📝</div>
+            Khóa học chưa có bài kiểm tra nào.
+          </div>
+        <% } %>
+
+        <!-- Dữ liệu động: vòng lặp quiz -->
+        <% quizList.forEach(q => { %>
+          <div class="quiz-item">
+            <div class="quiz-icon-box" aria-hidden="true">Q</div>
+
+            <div class="quiz-body">
+              <!-- Dữ liệu động: tên / ID quiz -->
+              <div class="quiz-title"><%= q.Quiz_title || ('Quiz #' + q.Quiz_ID) %></div>
+              <div class="quiz-meta">
+                Mở: <%= fmtDT(q.Open_time) %> &nbsp;|&nbsp; Đóng: <%= fmtDT(q.Close_time) %><br>
+                Thời gian: <strong><%= q.Duration %> phút</strong> &nbsp;|&nbsp;
+                Điểm đạt: <strong><%= q.Pass_score %>/<%= q.Max_score %></strong> &nbsp;|&nbsp;
+                Số lần đã làm: <strong><%= q.Attempt_count || 0 %></strong> &nbsp;|&nbsp;
+                Điểm tốt nhất: <strong><%= q.Best_score != null ? q.Best_score : '—' %></strong>
+              </div>
+            </div>
+
+            <div class="quiz-actions">
+              <!-- Dữ liệu động: trạng thái quiz -->
+              <% if (q.Quiz_status === 'Passed') { %>
+                <span class="quiz-badge quiz-badge-passed" aria-label="Đã đạt">✓ Đã đạt</span>
+              <% } else if (q.Quiz_status === 'Attempted') { %>
+                <span class="quiz-badge quiz-badge-failed" aria-label="Chưa đạt">✕ Chưa đạt</span>
+              <% } else { %>
+                <span class="quiz-badge quiz-badge-pending" aria-label="Chưa làm">Chưa làm</span>
+              <% } %>
+
+              <a href="/student/quizzes/<%= q.Quiz_ID %>/take" class="btn-primary" aria-label="Làm bài <%= q.Quiz_title || ('Quiz #' + q.Quiz_ID) %>">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Làm bài
+              </a>
+
+              <% if ((q.Attempt_count || 0) > 0) { %>
+                <a href="/student/quizzes/<%= q.Quiz_ID %>/results" class="btn-secondary" aria-label="Xem kết quả <%= q.Quiz_title || ('Quiz #' + q.Quiz_ID) %>">
+                  Xem kết quả
+                </a>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div><!-- /#panel-quizzes -->
+
+  </main><!-- /.main-content -->
+
+  <!-- ── FAB TIẾP TỤC HỌC (mobile) ──────────────────── -->
+<% if (resumeLecture) { %>
+  <div class="resume-fab" aria-label="Tiếp tục học">
+    <button type="button" onclick="scrollToLecture('<%= resumeLecture.Lecture_ID %>', '<%= resumeSectionId %>')" class="btn-resume" aria-label="Tiếp tục học từ bài: <%= resumeLecture.Title %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Tiếp tục học
+    </button>
+  </div>
+<% } %>
+</div><!-- /.page-root -->
+
+<script>
+  /* ── Cuộn đến bài học dở dang ──────────────────────── */
+  function scrollToLecture(lectureId, sectionId) {
+    // 1. Mở panel chứa toàn bộ bài giảng nếu đang đóng
+    const panel = document.getElementById('panel-lectures');
+    if (panel && panel.classList.contains('collapsed')) {
+      togglePanel('panel-lectures');
+    }
+
+    // 2. Mở học phần (section) chứa bài giảng nếu đang đóng
+    const sec = document.getElementById(sectionId);
+    if (sec && sec.classList.contains('collapsed')) {
+      toggleSection(sectionId);
+    }
+
+    // 3. Cuộn mượt màn hình xuống đúng bài giảng đó
+    const lecEl = document.getElementById('lecture-' + lectureId);
+    if (lecEl) {
+      lecEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Tạo hiệu ứng highlight chớp nháy nhẹ để user dễ nhận ra
+      const originalBg = lecEl.style.backgroundColor;
+      lecEl.style.backgroundColor = '#e0e7ff';
+      lecEl.style.transition = 'background-color 0.8s ease';
+      setTimeout(() => {
+        lecEl.style.backgroundColor = originalBg || 'transparent';
+      }, 1500);
+    }
+  }
+  /* ── Accordion: panel chính ─────────────────────────── */
+  function togglePanel(id) {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+    panel.classList.toggle('collapsed');
+    const btn = panel.querySelector('.info-panel-head');
+    if (btn) btn.setAttribute('aria-expanded', !panel.classList.contains('collapsed'));
+  }
+
+  /* ── Accordion: section học phần ─────────────────────── */
+  function toggleSection(id) {
+    const sec = document.getElementById(id);
+    if (!sec) return;
+    sec.classList.toggle('collapsed');
+    const btn = sec.querySelector('.section-block-head');
+    if (btn) btn.setAttribute('aria-expanded', !sec.classList.contains('collapsed'));
+  }
+
+  /* ── Keyboard support for accordion ────────────────── */
+  document.querySelectorAll('[role="button"]').forEach(function(el) {
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+    });
+  });
+
+  /* ── Animate progress bar on load ───────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    const fill = document.getElementById('progress-fill');
+    if (fill) {
+      // Dữ liệu động: progressPercent được nhúng vào JS
+      const target = '<%= pct %>';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          fill.style.width = target + '%';
+        });
+      });
+    }
+  });
+</script>
+</body>
+</html>

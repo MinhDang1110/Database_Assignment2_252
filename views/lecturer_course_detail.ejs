@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Quản lý môn học</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --indigo-900: #1e1b4b; --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3; --indigo-600: #4f46e5;
+      --indigo-500: #6366f1; --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc; --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6; --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf; --teal-300:   #5eead4;
+      --amber-400:  #fbbf24; --emerald-500:#10b981;
+      --rose-400:   #fb7185;
+
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+      --bg-field:   #ffffff;
+
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px;   --r-sm: 12px;
+      --r-md: 16px;  --r-lg: 22px;
+      --r-xl: 28px;  --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page); color: var(--txt-body);
+      -webkit-font-smoothing: antialiased; line-height: 1.6; min-height: 100vh;
+    }
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────── */
+    h1, h2, h3, .section-title, .course-title-main {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      color: var(--txt-head); letter-spacing: -0.02em;
+    }
+
+    /* ─── PAGE WRAPPER & NAV ─────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+    .topnav {
+      background: radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%), radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%), #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07); padding: 0 28px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; position: relative; }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px; color: white; font-weight: 800; font-size: 17px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center; font-family: "Plus Jakarta Sans", sans-serif;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+    }
+    .nav-wordmark { font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; font-weight: 700; color: #f1f0fe; }
+    .nav-wordmark small { display: block; font-size: 11px; color: #6b7191; font-weight: 400; font-family: "Be Vietnam Pro", sans-serif; }
+    
+    .nav-center { display: flex; gap: 4px; position: relative; }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; transition: 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; position: relative; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14); color: #fda4af; border: 1px solid rgba(251,113,133,0.22);
+      height: 36px; padding: 0 16px; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; transition: 0.18s;
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.24); color: #fff; }
+
+    /* ─── MAIN CONTENT ───────────────────────────────── */
+    .main-content { flex: 1; padding: 32px 28px 52px; max-width: 1240px; margin: 0 auto; width: 100%; }
+
+    /* ─── ALERTS ─────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px; border-radius: var(--r-md); padding: 13px 16px;
+      font-size: 14px; margin-bottom: 20px; animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .alert-bar-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #be123c; }
+
+    /* ─── COURSE HERO ────────────────────────────────── */
+    .course-hero {
+      border-radius: var(--r-2xl); padding: 36px 40px; margin-bottom: 24px; position: relative; overflow: hidden;
+      background: radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.28) 0%, transparent 55%), radial-gradient(ellipse 70% 100% at 100% 100%, rgba(139,92,246,0.20) 0%, transparent 50%), #0d0b1e;
+      box-shadow: var(--shadow-lg);
+    }
+    .course-hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+    .hero-inner { position: relative; z-index: 1; display: grid; gap: 24px; grid-template-columns: 1fr auto; align-items: start; }
+    .course-title-main { font-size: clamp(22px, 3.5vw, 32px); font-weight: 800; color: #f1f0fe; line-height: 1.2; margin-bottom: 10px; }
+    .course-desc-hero { color: rgba(255,255,255,0.65); font-size: 14.5px; line-height: 1.65; max-width: 680px; margin-bottom: 22px; }
+    .meta-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 5px 12px;
+      font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.80); backdrop-filter: blur(8px);
+    }
+    .btn-edit-course {
+      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: var(--r-sm);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;
+      font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.18s; white-space: nowrap; font-size: 14px;
+    }
+    .btn-edit-course:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+    /* ─── GRID LAYOUT ────────────────────────────────── */
+    .course-layout {
+      display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start;
+    }
+
+    /* ─── INFO PANEL ─────────────────────────────────── */
+    .info-panel {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 24px;
+    }
+    .info-panel-head {
+      padding: 16px 22px; border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; gap: 10px;
+    }
+    .info-panel-icon {
+      width: 32px; height: 32px; border-radius: var(--r-xs); display: grid; place-items: center; flex-shrink: 0; font-size: 15px;
+    }
+    .icon-info   { background: var(--indigo-100); color: var(--indigo-600); }
+    .icon-lecture{ background: #e0f2fe; color: #0369a1; }
+    .icon-quiz   { background: #fef3c7; color: #b45309; }
+    .icon-student{ background: #dcfce7; color: #16a34a; }
+
+    .info-panel-title { font-family: "Plus Jakarta Sans", sans-serif; font-size: 15px; font-weight: 700; color: var(--txt-head); flex: 1; }
+    
+    /* ─── FORMS & BUTTONS ────────────────────────────── */
+    .form-input, .form-select {
+      width: 100%; border: 1.5px solid var(--border); background: var(--bg-field); border-radius: 8px;
+      padding: 9px 14px; font-family: inherit; font-size: 13.5px; color: var(--txt-head); outline: none; transition: 0.2s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+    
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 8px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 13.5px; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none; box-shadow: 0 4px 12px rgba(99,102,241,0.25); transition: 0.15s; white-space: nowrap;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99,102,241,0.35); }
+    
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 8px;
+      background: transparent; color: var(--indigo-600); border: 1.5px solid var(--indigo-200); font-size: 13px; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: 0.15s; white-space: nowrap;
+    }
+    .btn-outline:hover { background: var(--indigo-50); border-color: var(--indigo-400); }
+
+    /* Forms in Panels */
+    .toolbar-box { background: var(--bg-soft); border-bottom: 1px solid var(--border-soft); padding: 16px 22px; }
+    .flex-form { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .flex-form > .form-input, .flex-form > .form-select { flex: 1; min-width: 150px; }
+
+    /* ─── LECTURE & QUIZ ITEMS ───────────────────────── */
+    .lecture-item, .quiz-item {
+      display: flex; align-items: flex-start; gap: 14px; padding: 16px 22px; border-bottom: 1px solid var(--border-soft); transition: 0.15s;
+    }
+    .lecture-item:last-child, .quiz-item:last-child { border-bottom: none; }
+    .lecture-item:hover, .quiz-item:hover { background: var(--bg-soft); }
+
+    .item-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+    .icon-l { background: var(--indigo-100); color: var(--indigo-600); }
+    .icon-q { background: #fef3c7; color: #b45309; }
+
+    .item-body { flex: 1; min-width: 0; }
+    .item-title { font-size: 14.5px; font-weight: 700; color: var(--txt-head); margin-bottom: 4px; }
+    .item-meta { font-size: 12.5px; color: var(--txt-soft); line-height: 1.6; }
+    .item-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+    .material-links { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .material-link { font-size: 13px; color: var(--indigo-600); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;}
+    .material-link:hover { text-decoration: underline; }
+
+    /* Section Header */
+    .section-header {
+      background: linear-gradient(90deg, rgba(99,102,241,0.05), transparent);
+      padding: 12px 22px; font-weight: 700; color: var(--indigo-800); font-size: 14px; border-bottom: 1px solid var(--border-soft);
+      display: flex; justify-content: space-between;
+    }
+
+    /* ─── DATA TABLE (STUDENTS) ──────────────────────── */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table thead tr { background: #0d0b1e; }
+    .data-table thead th { padding: 12px 16px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.6); text-align: left; }
+    .data-table tbody tr { border-bottom: 1px solid var(--border-soft); transition: 0.15s; }
+    .data-table tbody tr:hover { background: rgba(99,102,241,0.03); }
+    .data-table tbody td { padding: 14px 16px; font-size: 13.5px; color: var(--txt-body); vertical-align: middle; }
+    .student-name { font-weight: 600; color: var(--txt-head); margin-bottom: 2px; }
+    .student-email { font-size: 12px; color: var(--txt-muted); }
+    
+    .badge-status { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+    .st-none { background: var(--bg-soft); color: var(--txt-muted); border: 1px solid var(--border); }
+    .st-pass { background: #dcfce7; color: #16a34a; }
+    .st-fail { background: #fff1f2; color: #be123c; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .course-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .main-content { padding: 20px 16px; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .course-hero { padding: 24px 20px; }
+      .flex-form { flex-direction: column; align-items: stretch; }
+      .lecture-item, .quiz-item { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<%
+  const courseData = typeof course !== 'undefined' ? course : {};
+  const sectionList = typeof sections !== 'undefined' ? sections : [];
+  const lectureList = typeof lectures !== 'undefined' ? lectures : [];
+  const materialList = typeof materials !== 'undefined' ? materials : [];
+  const quizList = typeof quizzes !== 'undefined' ? quizzes : [];
+  const studentList = typeof students !== 'undefined' ? students : [];
+  const successMessage = typeof success !== 'undefined' ? success : null;
+  const errorMessage = typeof error !== 'undefined' ? error : null;
+  
+  function formatDateTime(value) {
+    if (!value) return '—';
+    return new Date(value).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+%>
+
+<body>
+<div class="page-root">
+
+  <nav class="topnav">
+    <a href="/lecturer/dashboard" class="nav-brand">
+      <div class="nav-logo">E</div>
+      <div class="nav-wordmark">
+        LMS EduGate
+        <small>Portal Giảng viên</small>
+      </div>
+    </a>
+
+    <div class="nav-center">
+      <a href="/lecturer/dashboard" class="nav-pill">Dashboard</a>
+      <a href="/courses" class="nav-pill active">Quản lý Khóa học</a>
+      <a href="/profile" class="nav-pill">Hồ sơ cá nhân</a>
+    </div>
+
+    <div class="nav-right">
+      <form method="POST" action="/logout" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?');">
+        <button class="btn-nav-danger" type="submit">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <main class="main-content">
+
+    <% if (successMessage) { %>
+      <div class="alert-bar alert-bar-success">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4.5M10 13.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <div class="course-hero">
+      <div class="hero-inner">
+        <div>
+          <h1 class="course-title-main"><%= courseData.Course_name %></h1>
+          <p class="course-desc-hero"><%= courseData.Description || 'Chưa có mô tả môn học.' %></p>
+          
+          <div class="meta-chips">
+            <span class="meta-chip">Course ID: <%= courseData.Course_ID %></span>
+            <span class="meta-chip">Môn học: <%= courseData.Subject_name %></span>
+            <span class="meta-chip">Khoa: <%= courseData.Dept_name %></span>
+            <span class="meta-chip">Tín chỉ: <%= courseData.Credits %></span>
+          </div>
+        </div>
+        
+        <div>
+          <a href="/courses/<%= courseData.Course_ID %>/edit" class="btn-edit-course">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Sửa thông tin
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-layout">
+      
+      <div class="layout-main">
+        
+        <div class="info-panel">
+          <div class="info-panel-head">
+            <div class="info-panel-icon icon-lecture"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <div class="info-panel-title">Danh sách Bài giảng (Lectures)</div>
+          </div>
+
+          <div class="toolbar-box">
+            <form method="POST" action="/lecturer/courses/<%= courseData.Course_ID %>/lectures" class="flex-form">
+              <select name="Section_order" class="form-select" required>
+                <option value="" disabled selected>-- Chọn học phần (Section) --</option>
+                <% sectionList.forEach(s => { %>
+                  <option value="<%= s.Section_order %>">Học phần <%= s.Section_order %> - <%= s.Section_name %></option>
+                <% }) %>
+              </select>
+              <input name="Title" class="form-input" placeholder="Nhập tên bài giảng mới..." required>
+              <button class="btn-primary" type="submit">+ Tạo bài giảng</button>
+            </form>
+          </div>
+
+          <% if (sectionList.length === 0) { %>
+            <div class="p-4 text-center text-muted" style="font-size: 14px;"> Chưa có học phần nào. Hãy tạo học phần mới bên dưới.</div>
+          <% } %>
+
+          <% sectionList.forEach(sec => {
+            const secLectures = lectureList.filter(l => Number(l.Section_order) === Number(sec.Section_order));
+          %>
+            <div class="section-header">
+              <span>Học phần <%= sec.Section_order %>: <%= sec.Section_name %></span>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="color: var(--txt-muted); font-weight: 500;"><%= secLectures.length %> bài giảng</span>
+                <form method="POST" action="/lecturer/courses/<%= courseData.Course_ID %>/sections/<%= sec.Section_order %>/delete"
+                      onsubmit="return confirm('Xóa học phần &#39;<%= sec.Section_name %>&#39;?\nTất cả <%= secLectures.length %> bài giảng trong học phần này cũng sẽ bị xóa!');">
+                  <button type="submit" style="background:rgba(251,113,133,0.12); color:#be123c; border:1px solid rgba(251,113,133,0.30); border-radius:6px; padding:4px 10px; font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Xóa học phần
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <% if (secLectures.length === 0) { %>
+              <div class="p-3 text-center text-muted" style="font-size: 13px; border-bottom: 1px solid var(--border-soft);">Chưa có bài giảng trong học phần này.</div>
+            <% } %>
+
+            <% secLectures.forEach(l => {
+              const links = materialList.filter(m => Number(m.Lecture_ID) === Number(l.Lecture_ID));
+            %>
+              <div class="lecture-item">
+                <div class="item-icon icon-l">📄</div>
+                <div class="item-body">
+                  <div class="item-title"><%= l.Title %></div>
+                  <div class="item-meta">Lecture ID: <%= l.Lecture_ID %> &nbsp;|&nbsp; Ngày tạo: <%= formatDateTime(l.Created_at) %></div>
+                  
+                  <div class="material-links">
+                    <% if (links.length === 0) { %>
+                      <span style="font-size: 12.5px; color: var(--txt-muted);">Chưa có tài liệu đính kèm</span>
+                    <% } %>
+                    <% links.forEach(m => { %>
+                      <a href="<%= m.Link %>" target="_blank" class="material-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        <%= m.Link %>
+                      </a>
+                    <% }) %>
+                  </div>
+                </div>
+
+                <div class="item-actions">
+                  <form method="POST" action="/lecturer/lectures/<%= l.Lecture_ID %>/materials" class="flex-form" style="gap: 6px;">
+                    <input type="url" name="Link" class="form-input" style="min-width: 220px; padding: 7px 12px; font-size: 13px;" placeholder="https://..." required>
+                    <button class="btn-outline" style="padding: 7px 12px;" type="submit">Thêm Link</button>
+                  </form>
+                  <form method="POST" action="/lecturer/lectures/<%= l.Lecture_ID %>/delete"
+                        onsubmit="return confirm('Xóa bài giảng &#39;<%= l.Title %>&#39;?\nTất cả tài liệu đính kèm và lịch sử học sinh cũng sẽ bị xóa!');"
+                        style="margin-left:4px;">
+                    <button type="submit" style="background:rgba(251,113,133,0.12); color:#be123c; border:1px solid rgba(251,113,133,0.30); border-radius:8px; padding:7px 12px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      Xóa
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          <% }) %>
+
+          <div class="toolbar-box" style="border-top: 1px solid var(--border-soft); border-bottom: none; background: #fff;">
+            <div style="font-weight: 700; font-size: 13.5px; color: var(--txt-head); margin-bottom: 8px;">Tạo học phần mới (New Section)</div>
+            <form method="POST" action="/lecturer/courses/<%= courseData.Course_ID %>/sections" class="flex-form">
+              <input name="Section_name" class="form-input" placeholder="Nhập tên học phần (Ví dụ: Tổng quan C++)..." required>
+              <button class="btn-primary" type="submit">+ Thêm học phần</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="info-panel">
+          <div class="info-panel-head">
+            <div class="info-panel-icon icon-quiz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="info-panel-title">Bài kiểm tra (Quizzes)</div>
+            <a href="/lecturer/courses/<%= courseData.Course_ID %>/quizzes/new" class="btn-primary" style="padding: 6px 14px; font-size: 12.5px;">+ Tạo Quiz</a>
+          </div>
+
+          <% if (quizList.length === 0) { %>
+            <div class="p-4 text-center text-muted" style="font-size: 14px;">  Môn học chưa có bài kiểm tra nào.</div>
+          <% } %>
+
+          <% quizList.forEach(q => { %>
+            <div class="quiz-item">
+              <div class="item-icon icon-q">Q</div>
+              <div class="item-body">
+                <div class="item-title"><%= q.Quiz_title || ('Quiz #' + q.Quiz_ID) %></div>
+                <div class="item-meta">
+                  Mở: <strong><%= formatDateTime(q.Open_time) %></strong> &nbsp;|&nbsp; Đóng: <strong><%= formatDateTime(q.Close_time) %></strong><br>
+                  Điểm đạt/Tối đa: <strong><%= q.Pass_score %>/<%= q.Max_score %></strong> &nbsp;|&nbsp; Câu hỏi: <strong><%= q.Total_questions || 0 %></strong>
+                </div>
+              </div>
+              <div class="item-actions">
+                <a href="/lecturer/quizzes/<%= q.Quiz_ID %>/info" class="btn-outline">Sửa thông tin</a>
+                <a href="/lecturer/quizzes/<%= q.Quiz_ID %>/questions" class="btn-primary">Quản lý câu hỏi</a>
+                <% const quizLabel = q.Quiz_title || ('Quiz #' + q.Quiz_ID); %>
+                <form method="POST" action="/lecturer/quizzes/<%= q.Quiz_ID %>/delete"
+                      onsubmit="return confirm('Xóa quiz &#39;<%= quizLabel %>&#39;?\nChỉ có thể xóa quiz chưa có học sinh nào làm bài.');">
+                  <button type="submit" style="background:rgba(251,113,133,0.12); color:#be123c; border:1px solid rgba(251,113,133,0.30); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Xóa
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+      </div>
+
+      <div class="layout-sidebar">
+        <div class="info-panel">
+          <div class="info-panel-head">
+            <div class="info-panel-icon icon-student"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="info-panel-title">Sinh viên đăng ký</div>
+            <span style="font-size: 13px; font-weight: 700; color: var(--indigo-600); background: var(--indigo-100); padding: 3px 10px; border-radius: 999px;"><%= studentList.length %></span>
+          </div>
+          
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Học viên</th>
+                  <th>Tiến độ Quiz</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (studentList.length === 0) { %>
+                  <tr><td colspan="3" class="text-center text-muted" style="padding: 24px;">Chưa có sinh viên nào đăng ký.</td></tr>
+                <% } %>
+                <% studentList.forEach(s => { %>
+                  <tr>
+                    <td>
+                      <div class="student-name"><%= s.Full_name %></div>
+                      <div class="student-email"><%= s.Email %></div>
+                    </td>
+                    <td style="font-weight: 600; color: var(--indigo-600);"><%= s.Passed_quizzes || 0 %> / <%= s.Total_quizzes || 0 %></td>
+                    <td>
+                      <% if (s.Quiz_learning_status === 'NO_QUIZ') { %><span class="badge-status st-none">Chưa có quiz</span>
+                      <% } else if (s.Quiz_learning_status === 'NOT_ATTEMPTED') { %><span class="badge-status st-none">Chưa làm</span>
+                      <% } else if (s.Quiz_learning_status === 'PASSED') { %><span class="badge-status st-pass">Đạt</span>
+                      <% } else { %><span class="badge-status st-fail">Chưa đạt</span><% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+    </div></main>
+</div>  
+</body>
+</html>

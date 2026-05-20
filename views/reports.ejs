@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Báo cáo học tập</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS ────────────────────────────────── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+      --rose-500:   #f43f5e;
+
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .hero-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    /* ─── PAGE WRAPPER ────────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ──────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+      font-family: "Be Vietnam Pro", sans-serif;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+    .user-role-badge {
+      font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+      background: rgba(99,102,241,0.25); color: var(--indigo-300);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.22); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 48px;
+      max-width: 1320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+    .alert-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── HERO BANNER ─────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl);
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%, rgba(45,212,191,0.12) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none;
+    }
+    .hero-banner::after {
+      content: "";
+      position: absolute; right: -80px; top: -80px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 24px; flex-wrap: wrap;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.30);
+      color: var(--indigo-300); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 14px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal-400);
+      box-shadow: 0 0 8px rgba(45,212,191,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero-title {
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
+      color: #f1f0fe; margin-bottom: 8px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #818cf8, #a78bfa 40%, #2dd4bf);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      color: #7b83a8; font-size: 14px; line-height: 1.75; max-width: 540px;
+    }
+    .hero-subtitle code {
+      color: var(--teal-300); background: rgba(45,212,191,0.12);
+      padding: 1px 7px; border-radius: 6px; font-size: 12.5px;
+    }
+    .hero-score-group {
+      display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .hero-stat-mini {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 10px 18px;
+    }
+    .hero-stat-mini strong {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 22px; font-weight: 800; color: #f1f0fe; letter-spacing: -0.02em;
+    }
+    .hero-stat-mini span { font-size: 12px; color: #7b83a8; line-height: 1.4; max-width: 80px; }
+
+    /* ─── SECTION HEADER ─────────────────────────────── */
+    .section-head {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .section-label { display: flex; align-items: center; gap: 10px; }
+    .section-label-bar {
+      width: 3px; height: 22px; border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #2dd4bf);
+    }
+    .section-title {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.025em; color: var(--txt-head);
+    }
+    .section-count {
+      background: var(--indigo-100); color: var(--indigo-600);
+      border-radius: 999px; padding: 3px 11px;
+      font-size: 12.5px; font-weight: 700;
+    }
+
+    /* ─── FILTER CARD ─────────────────────────────────── */
+    .filter-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px 26px;
+      box-shadow: var(--shadow-sm); margin-bottom: 24px;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.05s both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      align-items: end;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label {
+      font-size: 12.5px; font-weight: 700; color: var(--txt-soft);
+      letter-spacing: 0.02em;
+    }
+    .form-control, .form-select {
+      height: 40px; padding: 0 13px;
+      border-radius: var(--r-sm); border: 1.5px solid var(--border);
+      background: var(--bg-soft); font-family: inherit;
+      font-size: 14px; font-weight: 500; color: var(--txt-head);
+      outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+      width: 100%;
+    }
+    .form-control::placeholder { color: var(--txt-muted); font-weight: 400; }
+    .form-control:focus, .form-select:focus {
+      border-color: rgba(99,102,241,0.55);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+      background: white;
+    }
+
+    .filter-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: var(--r-sm);
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      text-decoration: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--indigo-600), var(--violet-500));
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.30);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(99,102,241,0.42); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      color: var(--txt-soft);
+    }
+    .btn-ghost:hover { background: white; border-color: rgba(99,102,241,0.25); color: var(--indigo-600); }
+
+    /* ─── TABLE CARD ──────────────────────────────────── */
+    .table-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: 24px;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.10s both;
+    }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    thead tr {
+      background: #0f0d26;
+      border-bottom: 2px solid rgba(99,102,241,0.30);
+    }
+    thead th {
+      padding: 13px 16px;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 11.5px; font-weight: 700;
+      color: rgba(255,255,255,0.60);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      white-space: nowrap; text-align: left;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-soft);
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-soft); }
+    tbody td {
+      padding: 12px 16px;
+      color: var(--txt-body);
+      vertical-align: middle;
+    }
+
+    .td-id {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; color: var(--indigo-600); font-size: 13px;
+    }
+    .td-course-name {
+      font-weight: 600; color: var(--txt-head); max-width: 180px;
+    }
+    .td-num {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 700; color: var(--txt-head); text-align: right;
+    }
+    .td-muted { color: var(--txt-muted); font-size: 13px; }
+
+    .rate-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+    }
+    .rate-pill-high { background: rgba(16,185,129,0.12); color: #059669; }
+    .rate-pill-mid  { background: rgba(251,191,36,0.14); color: #b45309; }
+    .rate-pill-low  { background: rgba(244,63,94,0.10);  color: #f43f5e; }
+
+    .score-chip {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 13.5px;
+    }
+    .score-chip-good   { color: var(--emerald-500); }
+    .score-chip-medium { color: var(--amber-400); }
+    .score-chip-bad    { color: var(--rose-500); }
+
+    .empty-row td {
+      padding: 48px 16px; text-align: center;
+    }
+    .empty-icon { font-size: 32px; margin-bottom: 10px; }
+    .empty-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--txt-head); margin-bottom: 6px;
+    }
+    .empty-body { font-size: 13.5px; color: var(--txt-muted); }
+
+    /* ─── FUNCTION DEMO CARDS ─────────────────────────── */
+    .fn-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+    }
+    @media (max-width: 768px) { .fn-grid { grid-template-columns: 1fr; } }
+
+    .fn-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px 24px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    }
+    .fn-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 2px 2px 0 0;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6 50%, #2dd4bf);
+    }
+    .fn-card-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 15px; font-weight: 800; color: var(--txt-head); margin-bottom: 6px;
+    }
+    .fn-card-sub {
+      font-size: 13px; color: var(--txt-muted); margin-bottom: 16px;
+    }
+    .fn-card-sub code {
+      color: var(--indigo-600); background: rgba(99,102,241,0.08);
+      padding: 1px 6px; border-radius: 6px; font-size: 12px;
+    }
+    .fn-input-row { display: flex; gap: 10px; align-items: center; }
+    .fn-input-row .form-control { flex: 1; }
+
+    .result-box {
+      margin-top: 14px; padding: 13px 16px; border-radius: var(--r-sm);
+      background: rgba(16,185,129,0.07); border: 1.5px solid rgba(16,185,129,0.25);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .result-box-icon { font-size: 18px; flex-shrink: 0; }
+    .result-box-label { font-size: 12.5px; color: var(--txt-muted); font-weight: 600; }
+    .result-box-value {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 20px; font-weight: 800; color: var(--emerald-500); letter-spacing: -0.03em;
+    }
+  </style>
+</head>
+
+<body>
+<%
+  const user           = typeof currentUser           !== 'undefined' ? currentUser           : null;
+  const q              = typeof query                 !== 'undefined' ? query                 : {};
+  const departmentList = typeof departments           !== 'undefined' ? departments           : [];
+  const reportList     = typeof reports               !== 'undefined' ? reports               : [];
+  const fnError        = typeof functionError          !== 'undefined' ? functionError          : null;
+  const gpaData        = typeof gpaResult              !== 'undefined' ? gpaResult              : null;
+  const crData         = typeof completionRateResult   !== 'undefined' ? completionRateResult   : null;
+%>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+
+    <a href="/courses" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Learning Management</small>
+      </div>
+    </a>
+
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/courses" class="nav-pill" aria-label="Quản lý khóa học">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+      <a href="/reports" class="nav-pill active" aria-label="Báo cáo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Báo cáo
+      </a>
+    </nav>
+
+    <div class="nav-right">
+      <% if (user) { %>
+        <div class="user-chip" aria-label="Thông tin tài khoản">
+          <div class="user-avatar" aria-hidden="true">
+            <%= String(user.fullName || user.Username || 'U').charAt(0).toUpperCase() %>
+          </div>
+          <span class="user-name"><%= user.fullName || user.Username %></span>
+          <span class="user-role-badge"><%= user.role %></span>
+        </div>
+        <form method="POST" action="/logout" style="display:inline"
+              onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+          <button class="btn-nav btn-nav-danger" type="submit" aria-label="Đăng xuất">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Đăng xuất
+          </button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn-nav btn-nav-ghost" aria-label="Đăng nhập">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Đăng nhập
+        </a>
+      <% } %>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alert -->
+    <% if (fnError) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= fnError %>
+      </div>
+    <% } %>
+
+    <!-- ── HERO BANNER ───────────────────────────────── -->
+    <div class="hero-banner" role="region" aria-label="Tổng quan báo cáo">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Quản trị hệ thống
+          </div>
+          <h1 class="hero-title">
+            Báo cáo kết quả
+            <br>
+            <span class="gradient-text">học tập</span>
+          </h1>
+          <p class="hero-subtitle" style="margin-top:10px;">
+            Procedure <code>sp_report_course_learning_result</code> và các function tổng hợp kết quả học tập theo khóa học.
+          </p>
+        </div>
+
+        <div class="hero-score-group">
+          <div class="hero-stat-mini" aria-label="Số khóa học trong báo cáo">
+            <strong><%= reportList.length %></strong>
+            <span>Khóa học<br>trong báo cáo</span>
+          </div>
+          <div class="hero-stat-mini" aria-label="Số khoa">
+            <strong><%= departmentList.length %></strong>
+            <span>Khoa<br>trong hệ thống</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FILTER CARD ───────────────────────────────── -->
+    <div class="section-head">
+      <div class="section-label">
+        <div class="section-label-bar" aria-hidden="true"></div>
+        <h2 class="section-title">Lọc báo cáo</h2>
+      </div>
+    </div>
+
+    <div class="filter-card" role="search" aria-label="Bộ lọc báo cáo">
+      <form method="GET" action="/reports">
+        <div class="filter-grid">
+
+          <div class="form-group">
+            <label class="form-label" for="dept_id">Khoa</label>
+            <select name="dept_id" id="dept_id" class="form-select" aria-label="Chọn khoa">
+              <option value="">Tất cả khoa</option>
+              <% departmentList.forEach(d => { %>
+                <option
+                  value="<%= d.Dept_ID %>"
+                  <%= String(q.dept_id || '') === String(d.Dept_ID) ? 'selected' : '' %>
+                >
+                  <%= d.Dept_name %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="from_date">Từ ngày</label>
+            <input
+              type="date" id="from_date" name="from_date"
+              class="form-control" value="<%= q.from_date || '' %>"
+              aria-label="Từ ngày"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="to_date">Đến ngày</label>
+            <input
+              type="date" id="to_date" name="to_date"
+              class="form-control" value="<%= q.to_date || '' %>"
+              aria-label="Đến ngày"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="min_students">Số SV tối thiểu</label>
+            <input
+              type="number" id="min_students" name="min_students"
+              class="form-control" min="0"
+              value="<%= q.min_students || 0 %>"
+              aria-label="Số sinh viên tối thiểu"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="min_avg_final_score">Điểm TB tối thiểu</label>
+            <input
+              type="number" id="min_avg_final_score" name="min_avg_final_score"
+              class="form-control" step="0.01" min="0" max="10"
+              value="<%= q.min_avg_final_score || '' %>"
+              placeholder="0 – 10"
+              aria-label="Điểm trung bình tối thiểu"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="opacity:0">.</label>
+            <div class="filter-actions">
+              <button class="btn btn-primary" type="submit" aria-label="Xem báo cáo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Xem báo cáo
+              </button>
+              <a href="/reports" class="btn btn-ghost" aria-label="Xóa bộ lọc">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Xóa lọc
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <!-- ── REPORT TABLE ──────────────────────────────── -->
+    <div class="section-head">
+      <div class="section-label">
+        <div class="section-label-bar" aria-hidden="true"></div>
+        <h2 class="section-title">Kết quả báo cáo</h2>
+        <span class="section-count"><%= reportList.length %> khóa học</span>
+      </div>
+    </div>
+
+    <div class="table-card" role="region" aria-label="Bảng báo cáo kết quả học tập">
+      <div class="table-scroll">
+        <table aria-label="Kết quả sp_report_course_learning_result">
+          <thead>
+            <tr>
+              <th>Course ID</th>
+              <th>Khóa học</th>
+              <th>Môn học</th>
+              <th>Khoa</th>
+              <th>Giảng viên</th>
+              <th style="text-align:right">Số SV</th>
+              <th style="text-align:right">Hoàn thành</th>
+              <th>Tỷ lệ</th>
+              <th style="text-align:right">Điểm CK TB</th>
+              <th style="text-align:right">Quiz</th>
+              <th style="text-align:right">Attempt</th>
+              <th style="text-align:right">Điểm Quiz TB</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (reportList.length === 0) { %>
+              <tr class="empty-row">
+                <td colspan="12">
+                  <div class="empty-icon" aria-hidden="true">📊</div>
+                  <div class="empty-title">Không có dữ liệu báo cáo</div>
+                  <div class="empty-body">Thử thay đổi điều kiện lọc hoặc xóa bộ lọc để xem tất cả.</div>
+                </td>
+              </tr>
+            <% } %>
+
+            <% reportList.forEach(r => {
+              const rate = parseFloat(r.Completion_rate_percent || 0);
+              const rateClass = rate >= 70 ? 'rate-pill-high' : rate >= 40 ? 'rate-pill-mid' : 'rate-pill-low';
+              const avgFinal = parseFloat(r.Avg_final_score || 0);
+              const scoreClass = avgFinal >= 7 ? 'score-chip-good' : avgFinal >= 5 ? 'score-chip-medium' : 'score-chip-bad';
+            %>
+              <tr>
+                <td><span class="td-id">#<%= r.Course_ID %></span></td>
+                <td><span class="td-course-name"><%= r.Course_name %></span></td>
+                <td class="td-muted"><%= r.Subject_name %></td>
+                <td class="td-muted"><%= r.Dept_name %></td>
+                <td class="td-muted"><%= r.Lecturer_name %></td>
+                <td><span class="td-num"><%= r.Total_enrolled_students %></span></td>
+                <td><span class="td-num"><%= r.Total_completed_students %></span></td>
+                <td>
+                  <span class="rate-pill <%= rateClass %>" aria-label="Tỷ lệ hoàn thành <%= rate %>%">
+                    <%= rate %>%
+                  </span>
+                </td>
+                <td>
+                  <span class="td-num score-chip <%= scoreClass %>">
+                    <%= r.Avg_final_score != null ? parseFloat(r.Avg_final_score).toFixed(2) : '—' %>
+                  </span>
+                </td>
+                <td><span class="td-num"><%= r.Total_quizzes %></span></td>
+                <td><span class="td-num"><%= r.Total_attempts %></span></td>
+                <td>
+                  <span class="td-num">
+                    <%= r.Avg_quiz_attempt_score != null ? parseFloat(r.Avg_quiz_attempt_score).toFixed(2) : '—' %>
+                  </span>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── FUNCTION DEMO ─────────────────────────────── -->
+    <div class="section-head">
+      <div class="section-label">
+        <div class="section-label-bar" aria-hidden="true"></div>
+        <h2 class="section-title">Minh họa Function</h2>
+      </div>
+    </div>
+
+    <div class="fn-grid">
+
+      <!-- GPA -->
+      <div class="fn-card" role="region" aria-label="Tính GPA sinh viên">
+        <div class="fn-card-title">GPA của sinh viên</div>
+        <div class="fn-card-sub">
+          Gọi <code>fn_calculate_student(Student_ID)</code>
+        </div>
+        <form method="GET" action="/reports">
+          <!-- Giữ lại các filter hiện tại -->
+          <input type="hidden" name="dept_id"             value="<%= q.dept_id || '' %>">
+          <input type="hidden" name="from_date"           value="<%= q.from_date || '' %>">
+          <input type="hidden" name="to_date"             value="<%= q.to_date || '' %>">
+          <input type="hidden" name="min_students"        value="<%= q.min_students || '' %>">
+          <input type="hidden" name="min_avg_final_score" value="<%= q.min_avg_final_score || '' %>">
+
+          <div class="fn-input-row">
+            <input
+              type="number"
+              name="student_id"
+              class="form-control"
+              placeholder="Student_ID, ví dụ: 1"
+              value="<%= q.student_id || '' %>"
+              min="1"
+              aria-label="Student ID"
+            >
+            <button class="btn btn-primary" type="submit" aria-label="Tính GPA">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Tính
+            </button>
+          </div>
+
+          <% if (gpaData) { %>
+            <div class="result-box" role="status" aria-label="Kết quả GPA">
+              <div class="result-box-icon" aria-hidden="true">🎓</div>
+              <div>
+                <div class="result-box-label">GPA</div>
+                <div class="result-box-value"><%= parseFloat(gpaData.Weighted_GPA).toFixed(2) %></div>
+              </div>
+            </div>
+          <% } %>
+        </form>
+      </div>
+
+      <!-- Completion Rate -->
+      <div class="fn-card" role="region" aria-label="Tính tỷ lệ hoàn thành">
+        <div class="fn-card-title">Tỷ lệ hoàn thành khóa học</div>
+        <div class="fn-card-sub">
+          Gọi <code>fn_calculate_course_completion_rate(Course_ID)</code>
+        </div>
+        <form method="GET" action="/reports">
+          <input type="hidden" name="dept_id"             value="<%= q.dept_id || '' %>">
+          <input type="hidden" name="from_date"           value="<%= q.from_date || '' %>">
+          <input type="hidden" name="to_date"             value="<%= q.to_date || '' %>">
+          <input type="hidden" name="min_students"        value="<%= q.min_students || '' %>">
+          <input type="hidden" name="min_avg_final_score" value="<%= q.min_avg_final_score || '' %>">
+          <input type="hidden" name="student_id"          value="<%= q.student_id || '' %>">
+
+          <div class="fn-input-row">
+            <input
+              type="number"
+              name="course_id"
+              class="form-control"
+              placeholder="Course_ID, ví dụ: 1"
+              value="<%= q.course_id || '' %>"
+              min="1"
+              aria-label="Course ID"
+            >
+            <button class="btn btn-primary" type="submit" aria-label="Tính tỷ lệ">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Tính
+            </button>
+          </div>
+
+          <% if (crData) { %>
+            <div class="result-box" role="status" aria-label="Kết quả tỷ lệ hoàn thành">
+              <div class="result-box-icon" aria-hidden="true">📈</div>
+              <div>
+                <div class="result-box-label">Completion Rate</div>
+                <div class="result-box-value"><%= parseFloat(crData.Completion_rate_percent).toFixed(1) %>%</div>
+              </div>
+            </div>
+          <% } %>
+        </form>
+      </div>
+
+    </div><!-- /.fn-grid -->
+
+  </main><!-- /.main-content -->
+
+</div><!-- /.page-root -->
+
+</body>
+</html>

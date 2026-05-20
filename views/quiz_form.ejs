@@ -1,0 +1,701 @@
+<%
+  const _locals        = locals || {};
+  const course         = _locals.course  || {};
+  const quiz           = _locals.quiz    || {};
+  const mode           = _locals.mode    || 'create';
+  const errorMessage   = _locals.error   || null;
+  const user           = _locals.currentUser || null;
+
+  function dt(value) {
+    return value ? new Date(value).toISOString().slice(0,16) : '';
+  }
+
+  const isCreate = mode === 'create';
+%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – <%= isCreate ? 'Tạo quiz mới' : 'Sửa quiz' %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-800: #2e2a6e;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-400:   #fb7185;
+      --rose-500:   #f43f5e;
+
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+      --bg-nav:     #0d0b1e;
+
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+      --txt-light:  #f1f0fe;
+
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .section-title, .hero-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ──────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+    }
+
+    .nav-center {
+      display: flex; align-items: center; gap: 4px; position: relative;
+    }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(99,102,241,0.20); color: #a5b4fc; }
+    .nav-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px; cursor: default;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2dd4bf);
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.22); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+    .alert-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── BREADCRUMB ──────────────────────────────────── */
+    .breadcrumb-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .breadcrumb-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 600;
+      color: var(--indigo-600); text-decoration: none;
+      padding: 6px 14px; border-radius: 10px;
+      background: white; border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: background 0.16s, border-color 0.16s, transform 0.16s;
+    }
+    .breadcrumb-link:hover {
+      background: var(--bg-soft); border-color: rgba(99,102,241,0.25);
+      transform: translateX(-2px);
+    }
+    .breadcrumb-link svg { width: 14px; height: 14px; }
+    .breadcrumb-sep { color: var(--txt-muted); font-size: 13px; }
+    .breadcrumb-current { font-size: 13.5px; font-weight: 600; color: var(--txt-soft); }
+
+    /* ─── HERO BANNER ─────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%, rgba(45,212,191,0.12) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.30);
+      color: var(--indigo-300); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 14px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    .badge-dot-emerald {
+      background: var(--emerald-400);
+      box-shadow: 0 0 8px rgba(52,211,153,0.9);
+    }
+    .badge-dot-amber {
+      background: var(--amber-400);
+      box-shadow: 0 0 8px rgba(251,191,36,0.9);
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .hero-title {
+      font-size: clamp(20px, 2.4vw, 28px);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.2;
+      color: #f1f0fe; margin-bottom: 6px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #818cf8, #a78bfa 40%, #2dd4bf);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle { color: #7b83a8; font-size: 13.5px; line-height: 1.7; }
+
+    /* ─── FORM CARD ──────────────────────────────────── */
+    .form-card {
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--r-lg); padding: 28px 30px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      margin-bottom: 16px;
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .form-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 2px 2px 0 0;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6 50%, #2dd4bf);
+    }
+
+    .card-section-title {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--txt-head); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ─── FORM ELEMENTS ──────────────────────────────── */
+    .form-grid   { display: grid; gap: 18px; }
+    .form-grid-2 { grid-template-columns: 1fr 1fr; }
+    .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-grid-1 { grid-template-columns: 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 12.5px; font-weight: 700;
+      color: var(--txt-soft); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border);
+      background: var(--bg-soft);
+      font-family: inherit;
+      font-size: 14.5px; font-weight: 500;
+      color: var(--txt-head);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: var(--txt-muted); font-weight: 400; }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: rgba(99,102,241,0.55);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+      background: white;
+    }
+    .form-input:read-only {
+      background: var(--border-soft); color: var(--txt-muted); cursor: not-allowed;
+    }
+
+    .form-hint {
+      font-size: 12px; color: var(--txt-muted);
+      display: flex; align-items: flex-start; gap: 5px;
+    }
+    .form-hint svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── SUBMIT STRIP ───────────────────────────────── */
+    .submit-strip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .submit-strip-info { font-size: 13px; color: var(--txt-muted); }
+    .submit-strip-info strong { color: var(--txt-soft); }
+
+    .btn-ctrl {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: var(--r-sm);
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      text-decoration: none;
+    }
+    .btn-ctrl:active { transform: scale(0.97); }
+    .btn-ctrl svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--indigo-600), var(--violet-500));
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(99,102,241,0.45); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      color: var(--txt-soft);
+    }
+    .btn-ghost:hover { background: white; border-color: rgba(99,102,241,0.25); color: var(--indigo-600); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+      .main-content { padding: 20px 16px 40px; }
+      .topnav { padding: 0 16px; }
+      .nav-center { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+    <a href="/lecturer/dashboard" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Lecturer Portal</small>
+      </div>
+    </a>
+
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/lecturer/dashboard" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Trang chính
+      </a>
+      <a href="/lecturer/courses/<%= course.Course_ID %>" class="nav-pill active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+    </nav>
+
+    <div class="nav-right">
+      <% if (user) { %>
+        <div class="user-chip">
+          <div class="user-avatar"><%= String(user.Display_name || user.Username || 'L').charAt(0).toUpperCase() %></div>
+          <span class="user-name"><%= user.Display_name || user.Username %></span>
+        </div>
+      <% } %>
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-row" aria-label="Điều hướng phụ">
+      <a href="/lecturer/courses/<%= course.Course_ID %>" class="breadcrumb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Quay lại môn học
+      </a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current"><%= isCreate ? 'Tạo quiz mới' : 'Sửa quiz #' + quiz.Quiz_ID %></span>
+    </nav>
+
+    <!-- Hero banner -->
+    <div class="hero-banner" role="region" aria-label="<%= isCreate ? 'Tạo quiz mới' : 'Sửa quiz' %>">
+      <div class="hero-inner">
+        <div class="hero-badge">
+          <span class="badge-dot <%= isCreate ? 'badge-dot-emerald' : 'badge-dot-amber' %>" aria-hidden="true"></span>
+          Giảng viên · <%= isCreate ? 'Tạo quiz mới' : 'Chỉnh sửa quiz' %>
+        </div>
+        <h1 class="hero-title">
+          <%= isCreate ? 'Tạo quiz mới' : 'Sửa quiz' %>
+          <% if (!isCreate) { %><span class="gradient-text"> #<%= quiz.Quiz_ID %></span><% } %>
+          <br><span class="gradient-text"><%= course.Course_name || '' %></span>
+        </h1>
+        <p class="hero-subtitle" style="margin-top:8px;">
+          <% if (isCreate) { %>
+            Điền đầy đủ thông tin bên dưới để tạo quiz cho khóa học.
+          <% } else { %>
+            Chỉnh sửa thông tin quiz. Thay đổi sẽ có hiệu lực ngay sau khi lưu.
+          <% } %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form
+      method="POST"
+      action="<%= isCreate
+        ? '/lecturer/courses/' + course.Course_ID + '/quizzes'
+        : '/lecturer/quizzes/' + quiz.Quiz_ID
+      %>"
+      id="quiz-form"
+      novalidate
+    >
+
+      <!-- ── Card 1: Thông tin cơ bản ───────────────── -->
+      <div class="form-card">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Thông tin cơ bản
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="Quiz_title">Tên quiz</label>
+            <input
+              type="text"
+              id="Quiz_title"
+              name="Quiz_title"
+              class="form-input"
+              value="<%= quiz.Quiz_title || '' %>"
+              placeholder="Ví dụ: Kiểm tra chương 1 – Cấu trúc dữ liệu"
+              required
+              aria-describedby="title-hint"
+            >
+            <span class="form-hint" id="title-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Tên hiển thị cho sinh viên khi xem danh sách quiz.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Card 2: Thời gian ───────────────────────── -->
+      <div class="form-card">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Thời gian
+        </div>
+
+        <div class="form-grid form-grid-2" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="form-label" for="Open_time">Thời gian mở</label>
+            <input
+              type="datetime-local"
+              id="Open_time"
+              name="Open_time"
+              class="form-input"
+              required
+              value="<%= dt(quiz.Open_time) %>"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="Close_time">Thời gian đóng</label>
+            <input
+              type="datetime-local"
+              id="Close_time"
+              name="Close_time"
+              class="form-input"
+              required
+              value="<%= dt(quiz.Close_time) %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="Duration">Thời lượng làm bài (phút)</label>
+            <input
+              type="number"
+              id="Duration"
+              name="Duration"
+              class="form-input"
+              min="1"
+              required
+              value="<%= quiz.Duration || 45 %>"
+              placeholder="Ví dụ: 45"
+              aria-describedby="duration-hint"
+              style="max-width:220px;"
+            >
+            <span class="form-hint" id="duration-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Tính bằng phút, tối thiểu 1 phút.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Card 3: Cấu hình điểm & lần làm ───────── -->
+      <div class="form-card">
+        <div class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Cấu hình điểm số & lần làm bài
+        </div>
+
+        <div class="form-grid form-grid-3" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="form-label" for="Max_attempts">Số lần làm tối đa</label>
+            <input
+              type="number"
+              id="Max_attempts"
+              name="Max_attempts"
+              class="form-input"
+              min="1"
+              required
+              value="<%= quiz.Max_attempts || 1 %>"
+              placeholder="1"
+              aria-describedby="attempts-hint"
+            >
+            <span class="form-hint" id="attempts-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Tối thiểu 1 lần.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="Pass_score">Điểm qua môn</label>
+            <input
+              type="number"
+              id="Pass_score"
+              name="Pass_score"
+              class="form-input"
+              min="0"
+              step="0.01"
+              required
+              value="<%= quiz.Pass_score || 5 %>"
+              placeholder="5.00"
+              aria-describedby="pass-hint"
+            >
+            <span class="form-hint" id="pass-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Điểm tối thiểu để qua bài quiz.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="form-grid form-grid-1">
+          <div class="form-group">
+            <label class="form-label" for="Max_score">Điểm tối đa</label>
+            <input
+              type="number"
+              id="Max_score"
+              name="Max_score"
+              class="form-input"
+              min="1"
+              step="0.01"
+              readonly
+              value="<%= quiz.Max_score || 10 %>"
+              aria-describedby="maxscore-hint"
+              style="max-width:220px;"
+            >
+            <span class="form-hint" id="maxscore-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              Được tính tự động từ tổng điểm các câu hỏi, không thể chỉnh sửa trực tiếp.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Submit strip ─────────────────────────────── -->
+      <div class="submit-strip">
+        <div class="submit-strip-info">
+          Khóa học: <strong><%= course.Course_name || '' %></strong>
+          <% if (!isCreate) { %> · Quiz <strong>#<%= quiz.Quiz_ID %></strong><% } %>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <a href="/lecturer/courses/<%= course.Course_ID %>" class="btn-ctrl btn-ghost">
+            Huỷ
+          </a>
+          <button type="submit" class="btn-ctrl btn-primary">
+            <% if (isCreate) { %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tạo quiz
+            <% } else { %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Lưu thay đổi
+            <% } %>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </main>
+</div>
+
+</body>
+</html>

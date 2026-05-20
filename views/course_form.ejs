@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – <%= mode === 'create' ? 'Thêm khóa học' : 'Cập nhật khóa học' %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --rose-400:   #fb7185;
+
+      --bg-page:   #f4f6ff;
+      --bg-card:   #ffffff;
+      --bg-soft:   #f8f9ff;
+      --bg-nav:    #0d0b1e;
+      --bg-field:  #f8f9ff;
+
+      --txt-head:  #0d0c22;
+      --txt-body:  #374151;
+      --txt-soft:  #6b7280;
+      --txt-muted: #9ca3af;
+      --txt-light: #f1f0fe;
+
+      --border:    #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md: 0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg: 0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px;  --r-sm: 12px;
+      --r-md: 16px; --r-lg: 22px;
+      --r-xl: 28px; --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── PAGE WRAPPER ───────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ─────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+
+    .topnav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .nav-logo {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid;
+      place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f0fe;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-wordmark small {
+      display: block;
+      font-size: 11px;
+      color: #6b7191;
+      font-weight: 400;
+      margin-top: 1px;
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .btn-nav {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.16s;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav:active { transform: scale(0.97); }
+
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.13); color: #fff; }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 40px 28px 52px;
+      max-width: 800px; /* Thu hẹp lại để form cân đối hơn */
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ─────────────────────────────────────── */
+    .alert-bar {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: var(--r-md);
+      padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 24px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar svg { flex-shrink: 0; margin-top: 1px; }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+
+    /* ─── PANEL CARD ─────────────────────────────────── */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--border-soft);
+      position: relative;
+    }
+
+    .panel-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #2dd4bf);
+    }
+
+    .panel-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--txt-head);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .panel-subtitle { font-size: 14px; color: var(--txt-muted); }
+
+    .panel-body { padding: 28px; }
+
+    /* ─── FORM ELEMENTS ──────────────────────────────── */
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 8px;
+      transition: color 0.18s;
+    }
+
+    .field:focus-within label { color: var(--indigo-600); }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap::after {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+    .input-wrap:focus-within::after { opacity: 0.12; }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      background: var(--bg-field);
+      border-radius: var(--r-md);
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 14.5px;
+      color: var(--txt-head);
+      outline: none;
+      transition: border-color 0.20s, box-shadow 0.20s, background 0.20s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #b0b7c9; }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      background: #fff;
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%239ca3af' stroke-width='2' stroke-linecap='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    .form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    /* ─── BUTTONS ────────────────────────────────────── */
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .btn-group > * { flex: 1; }
+
+    .save-btn {
+      height: 52px;
+      border: none;
+      border-radius: var(--r-md);
+      background: linear-gradient(135deg, #4f46e5, #6366f1 50%, #8b5cf6);
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(99,102,241,0.32);
+      transition: transform 0.20s, box-shadow 0.20s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .save-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: skewX(-15deg);
+      transition: left 0.5s;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(99,102,241,0.44);
+    }
+    .save-btn:hover::before { left: 140%; }
+    .save-btn:active { transform: translateY(0); }
+    .save-btn:focus-visible { outline: 3px solid rgba(99,102,241,0.50); outline-offset: 3px; }
+
+    .cancel-btn {
+      height: 52px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--bg-card);
+      color: var(--txt-body);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .cancel-btn:hover {
+      background: var(--bg-soft);
+      border-color: #d1d5db;
+      color: var(--txt-head);
+      transform: translateY(-2px);
+    }
+    .cancel-btn:active { transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main-content { padding: 24px 16px 40px; }
+      .topnav { padding: 0 16px; }
+      .field-row { grid-template-columns: 1fr; gap: 20px; }
+      .btn-group { flex-direction: column; }
+    }
+    @media (max-width: 520px) {
+      .topnav .nav-wordmark small { display: none; }
+      .panel-header { padding: 18px 20px; }
+      .panel-body { padding: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page-root">
+
+  <nav class="topnav" aria-label="Thanh điều hướng chính">
+    <a href="/courses" class="nav-brand" aria-label="LMS EduGate – Quay về Danh sách khóa học">
+      <div class="nav-logo">E</div>
+      <div class="nav-wordmark">
+        LMS EduGate
+        <small><%= mode === 'create' ? 'Quản lý khóa học' : 'Cập nhật khóa học' %></small>
+      </div>
+    </a>
+
+    <div class="nav-right">
+      <a href="/courses" class="btn-nav btn-nav-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Trở về danh sách
+      </a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#16a34a" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 4.5-5" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <%= success %>
+      </div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#be123c" stroke-width="1.5"/><path d="M10 6v4.5M10 13.5v.5" stroke="#be123c" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><%= mode === 'create' ? 'Thêm khóa học mới' : 'Cập nhật khóa học' %></div>
+        <div class="panel-subtitle">Điền đầy đủ các thông tin chi tiết về khóa học bên dưới</div>
+      </div>
+
+      <div class="panel-body">
+        <form method="POST" action="<%= mode === 'create' ? '/courses' : '/courses/' + course.Course_ID %>" autocomplete="off">
+
+          <div class="field">
+            <label for="Course_name">Tên khóa học</label>
+            <div class="input-wrap">
+              <input type="text" id="Course_name" name="Course_name" class="form-input" maxlength="150" required value="<%= course.Course_name || '' %>" placeholder="Nhập tên khóa học (VD: Lập trình cơ bản C++)">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="Description">Mô tả</label>
+            <div class="input-wrap">
+              <textarea id="Description" name="Description" class="form-textarea" maxlength="1000" placeholder="Mô tả chi tiết về nội dung khóa học..."><%= course.Description || '' %></textarea>
+            </div>
+          </div>
+
+          <div class="field field-row">
+            <div class="field">
+              <label for="Subject_ID">Môn học</label>
+              <div class="input-wrap">
+                <select id="Subject_ID" name="Subject_ID" class="form-select" required>
+                  <option value="" disabled <%= !course.Subject_ID ? 'selected' : '' %>>-- Chọn môn học --</option>
+                  <% subjects.forEach(s => { %>
+                    <option value="<%= s.Subject_ID %>" <%= String(course.Subject_ID || '') === String(s.Subject_ID) ? 'selected' : '' %>>
+                      <%= s.Subject_name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="Lecturer_ID">Giảng viên phụ trách</label>
+              <div class="input-wrap">
+                <select id="Lecturer_ID" name="Lecturer_ID" class="form-select" required>
+                  <option value="" disabled <%= !course.Lecturer_ID ? 'selected' : '' %>>-- Chọn giảng viên --</option>
+                  <% lecturers.forEach(l => { %>
+                    <option value="<%= l.Lecturer_ID %>" <%= String(course.Lecturer_ID || '') === String(l.Lecturer_ID) ? 'selected' : '' %>>
+                      <%= l.Lecturer_display_name || l.Full_name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="field field-row">
+            <div class="field">
+              <label for="Start_date">Ngày bắt đầu</label>
+              <div class="input-wrap">
+                <input type="date" id="Start_date" name="Start_date" class="form-input" required value="<%= course.Start_date ? (function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})(new Date(course.Start_date)) : '' %>">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="End_date">Ngày kết thúc</label>
+              <div class="input-wrap">
+                <input type="date" id="End_date" name="End_date" class="form-input" required value="<%= course.End_date ? (function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})(new Date(course.End_date)) : '' %>">
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="/courses" class="cancel-btn">Hủy bỏ</a>
+            <button class="save-btn" type="submit">
+              <%= mode === 'create' ? 'Tạo khóa học' : 'Lưu thay đổi' %>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

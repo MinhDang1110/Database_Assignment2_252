@@ -1,0 +1,909 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Trang Quản Trị</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────── */
+    :root {
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --amber-500:  #f59e0b;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --emerald-400:#34d399;
+      --rose-500:   #f43f5e;
+      --rose-400:   #fb7185;
+
+      --bg-page:    #f4f6ff;
+      --bg-card:    #ffffff;
+      --bg-soft:    #f8f9ff;
+
+      --txt-head:   #0d0c22;
+      --txt-body:   #374151;
+      --txt-soft:   #6b7280;
+      --txt-muted:  #9ca3af;
+
+      --border:     #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md:  0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:  0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-sm: 12px;
+      --r-md: 18px;
+      --r-lg: 24px;
+      --r-xl: 30px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, .hero-title, .section-title, .stat-value {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      letter-spacing: -0.035em;
+      color: var(--txt-head);
+    }
+
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ──────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(245,158,11,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(239,68,68,0.14) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+    .topnav::before {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none;
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; position: relative; }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 55%, #8b5cf6 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(245,158,11,0.45), inset 0 1px 0 rgba(255,255,255,0.22);
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small { display: block; font-size: 11px; color: #6b7191; font-weight: 400; margin-top: 1px; }
+
+    .nav-center { display: flex; align-items: center; gap: 4px; position: relative; }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.55);
+      text-decoration: none; transition: background 0.18s, color 0.18s;
+    }
+    .nav-pill:hover { background: rgba(255,255,255,0.07); color: #f1f0fe; }
+    .nav-pill.active { background: rgba(245,158,11,0.18); color: #fbbf24; }
+    .nav-pill svg { width: 16px; height: 16px; }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative; }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px;
+    }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 13px; font-weight: 700; color: white;
+    }
+    .user-name { font-size: 13.5px; font-weight: 600; color: #e2e0fc; }
+    .role-admin {
+      display: inline-block; background: rgba(245,158,11,0.22); border: 1px solid rgba(245,158,11,0.38);
+      color: #fbbf24; border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 700;
+    }
+    .btn-nav {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s;
+      border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-danger { background: rgba(251,113,133,0.14); color: #fda4af; border: 1px solid rgba(251,113,133,0.22); }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.24); color: #fff; }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .main-content {
+      flex: 1; padding: 32px 28px 56px;
+      max-width: 1320px; margin: 0 auto; width: 100%;
+    }
+
+    /* ─── ALERTS ──────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent; font-size: 14px; line-height: 1.5; margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+    .alert-icon { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
+
+    /* ─── HERO ────────────────────────────────────────── */
+    .hero-banner {
+      border-radius: var(--r-xl); padding: 36px 40px; margin-bottom: 24px;
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%,   rgba(245,158,11,0.28) 0%,  transparent 50%),
+        radial-gradient(ellipse 60% 100% at 100% 100%,rgba(239,68,68,0.24) 0%,   transparent 50%),
+        radial-gradient(ellipse 40% 60%  at 60% 20%,  rgba(139,92,246,0.14) 0%,  transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes hero-in { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    .hero-banner::before {
+      content:""; position:absolute; inset:0;
+      background-image: linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
+      background-size: 48px 48px; pointer-events:none;
+    }
+    .hero-banner::after {
+      content:""; position:absolute; right:-80px; top:-80px;
+      width:320px; height:320px; border-radius:50%;
+      background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%); pointer-events:none;
+    }
+    .hero-inner { position:relative; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+    .hero-text { max-width:680px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(245,158,11,0.16); border: 1px solid rgba(245,158,11,0.28);
+      color: #fbbf24; border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600;
+      margin-bottom: 16px; backdrop-filter: blur(6px);
+    }
+    .badge-dot {
+      width:6px; height:6px; border-radius:50%; background:#fbbf24;
+      box-shadow: 0 0 8px rgba(251,191,36,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.7);} }
+    .hero-title {
+      font-size: clamp(26px, 3.2vw, 40px); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1.1; color: #f1f0fe; margin-bottom: 10px;
+    }
+    .hero-title .gradient-text {
+      background: linear-gradient(90deg, #fbbf24, #f87171 40%, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-subtitle { color: #7b83a8; font-size: 14.5px; line-height: 1.75; }
+    .hero-stats-row { display:flex; gap:10px; flex-wrap:wrap; }
+    .hero-stat-mini {
+      display:flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09);
+      border-radius:14px; padding:10px 18px;
+    }
+    .hero-stat-mini strong { font-family:"Plus Jakarta Sans",sans-serif; font-size:22px; font-weight:800; color:#f1f0fe; letter-spacing:-0.02em; }
+    .hero-stat-mini span { font-size:12px; color:#7b83a8; line-height:1.4; max-width:64px; }
+
+    /* ─── STAT GRID ───────────────────────────────────── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 22px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .stat-card:nth-child(1){animation-delay:.10s}
+    .stat-card:nth-child(2){animation-delay:.17s}
+    .stat-card:nth-child(3){animation-delay:.24s}
+    .stat-card:nth-child(4){animation-delay:.31s}
+    @keyframes card-in { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .stat-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:rgba(245,158,11,0.25); }
+    .stat-card::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; border-radius:2px 2px 0 0; }
+    .stat-card:nth-child(1)::before { background:linear-gradient(90deg,#6366f1,#818cf8); }
+    .stat-card:nth-child(2)::before { background:linear-gradient(90deg,#10b981,#34d399); }
+    .stat-card:nth-child(3)::before { background:linear-gradient(90deg,#8b5cf6,#a78bfa); }
+    .stat-card:nth-child(4)::before { background:linear-gradient(90deg,#f59e0b,#fbbf24); }
+    .stat-icon { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; margin-bottom:14px; font-size:19px; }
+    .si-indigo  { background:rgba(99,102,241,0.10); color:var(--indigo-500); }
+    .si-emerald { background:rgba(16,185,129,0.10); color:#10b981; }
+    .si-violet  { background:rgba(139,92,246,0.10); color:var(--violet-500); }
+    .si-amber   { background:rgba(245,158,11,0.10); color:#f59e0b; }
+    .stat-value { font-family:"Plus Jakarta Sans",sans-serif; font-size:34px; font-weight:800; letter-spacing:-0.04em; color:var(--txt-head); line-height:1; margin-bottom:6px; }
+    .stat-label { font-size:13px; font-weight:700; color:var(--txt-soft); margin-bottom:4px; }
+    .stat-hint  { font-size:12px; color:var(--txt-muted); }
+
+    /* ─── SECTION STRUCTURE ───────────────────────────── */
+    .section-block { margin-bottom: 28px; animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+    .section-block:nth-child(2){animation-delay:.12s}
+    .section-block:nth-child(3){animation-delay:.18s}
+    .section-block:nth-child(4){animation-delay:.24s}
+    .section-block:nth-child(5){animation-delay:.30s}
+    .section-block:nth-child(6){animation-delay:.36s}
+
+    .panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .panel-head {
+      padding: 16px 22px; border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(180deg, #fff, var(--bg-soft));
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .panel-head-left { display: flex; align-items: center; gap: 10px; }
+    .panel-head-icon {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .panel-head-icon svg { width: 16px; height: 16px; }
+    .phi-indigo  { background:rgba(99,102,241,0.10); color:var(--indigo-500); }
+    .phi-emerald { background:rgba(16,185,129,0.10); color:#10b981; }
+    .phi-violet  { background:rgba(139,92,246,0.10); color:var(--violet-500); }
+    .phi-amber   { background:rgba(245,158,11,0.10); color:#f59e0b; }
+    .phi-rose    { background:rgba(244,63,94,0.10);  color:#f43f5e; }
+
+    .panel-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:16px; font-weight:700; color:var(--txt-head); letter-spacing:-0.02em; }
+    .panel-sub   { font-size:12.5px; color:var(--txt-muted); margin-top:2px; }
+    .count-pill  {
+      background:var(--indigo-100); color:var(--indigo-600);
+      border-radius:999px; padding:3px 11px; font-size:12.5px; font-weight:700;
+    }
+    .count-pill-amber  { background:rgba(245,158,11,0.12);  color:#b45309; }
+    .count-pill-violet { background:rgba(139,92,246,0.12);  color:#7c3aed; }
+
+    .panel-body { padding: 22px 24px; }
+
+    /* ─── FORM GRID ───────────────────────────────────── */
+    .form-grid {
+      display: grid; gap: 14px;
+      grid-template-columns: repeat(12, minmax(0,1fr));
+    }
+    .gc-2  { grid-column: span 2; }
+    .gc-3  { grid-column: span 3; }
+    .gc-4  { grid-column: span 4; }
+    .gc-5  { grid-column: span 5; }
+    .gc-6  { grid-column: span 6; }
+    .gc-8  { grid-column: span 8; }
+    .gc-12 { grid-column: span 12; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12px; font-weight: 700; color: var(--txt-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-hint  { font-size: 11.5px; color: var(--txt-muted); margin-top: 3px; }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%; border-radius: var(--r-sm); border: 1.5px solid var(--border);
+      font-family: "Be Vietnam Pro", sans-serif; font-size: 13.5px; font-weight: 500;
+      color: var(--txt-head); background: var(--bg-soft); outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .form-input, .form-select { height: 42px; padding: 0 14px; }
+    .form-textarea { padding: 12px 14px; resize: vertical; min-height: 80px; }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--txt-muted); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--indigo-500); background: #fff;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .form-select {
+      appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px;
+    }
+
+    /* Prerequisite checkbox grid */
+    .prereq-box {
+      background: var(--bg-soft); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); padding: 16px;
+      display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px;
+    }
+    .check-item { display: flex; align-items: center; gap: 8px; }
+    .check-input {
+      width: 16px; height: 16px; border-radius: 5px;
+      border: 1.5px solid var(--border); accent-color: var(--indigo-600); cursor: pointer; flex-shrink: 0;
+    }
+    .check-label { font-size: 13.5px; color: var(--txt-body); font-weight: 500; cursor: pointer; }
+
+    /* ─── BUTTONS ─────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 18px; border-radius: var(--r-sm);
+      font-family: "Be Vietnam Pro", sans-serif; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, transform 0.16s, box-shadow 0.18s;
+      border: none; text-decoration: none; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary { background: var(--indigo-600); color: #fff; box-shadow: 0 6px 18px rgba(99,102,241,0.28); }
+    .btn-primary:hover { background: var(--indigo-700); }
+    .btn-success { background: rgba(16,185,129,0.90); color: #fff; box-shadow: 0 6px 18px rgba(16,185,129,0.25); }
+    .btn-success:hover { background: #059669; }
+    .btn-ghost { background: var(--bg-soft); color: var(--txt-soft); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg-card); border-color: rgba(99,102,241,0.22); color: var(--indigo-600); }
+    .btn-warning { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.25); }
+    .btn-warning:hover { background: rgba(245,158,11,0.22); }
+    .btn-danger  { background: rgba(244,63,94,0.10);  color: #be123c; border: 1px solid rgba(244,63,94,0.22); }
+    .btn-danger:hover  { background: rgba(244,63,94,0.18); }
+    .btn-sm { height: 32px; padding: 0 13px; font-size: 12.5px; border-radius: 8px; }
+
+    /* ─── TABLE ───────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--bg-soft); border-bottom: 1.5px solid var(--border); }
+    thead th {
+      padding: 11px 16px; font-size: 11.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--txt-muted);
+      text-align: left; white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border-soft); transition: background 0.14s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-soft); }
+    tbody td { padding: 12px 16px; font-size: 13.5px; color: var(--txt-body); vertical-align: middle; }
+    .td-id { font-family:"Plus Jakarta Sans",sans-serif; font-size:12.5px; font-weight:700; color:var(--txt-muted); }
+    .td-bold { font-weight: 700; color: var(--txt-head); }
+    .td-muted { font-size: 12px; color: var(--txt-muted); margin-top: 2px; }
+
+    .role-badge {
+      display: inline-block; border-radius: 999px;
+      padding: 3px 10px; font-size: 12px; font-weight: 700;
+    }
+    .rb-lecturer { background: rgba(99,102,241,0.12); color: var(--indigo-600); }
+    .rb-student  { background: rgba(16,185,129,0.12); color: #059669; }
+
+    .empty-row td { text-align: center; color: var(--txt-muted); padding: 36px 16px; font-size: 14px; }
+
+    /* ─── SECTION LABEL ───────────────────────────────── */
+    .section-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+    .section-label { display:flex; align-items:center; gap:10px; }
+    .section-label-bar { width:3px; height:22px; border-radius:2px; background:linear-gradient(180deg,#f59e0b,#ef4444); }
+    .section-title { font-size:20px; font-weight:800; letter-spacing:-0.025em; color:var(--txt-head); }
+
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width:1100px) { .stat-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:768px) {
+      .topnav { padding:0 16px; }
+      .nav-center { display:none; }
+      .main-content { padding:20px 16px 40px; }
+      .hero-banner { padding:24px 20px; }
+      .hero-stats-row { display:none; }
+      .stat-grid { grid-template-columns:1fr 1fr; gap:10px; }
+      .form-grid { grid-template-columns:1fr; }
+      .gc-2,.gc-3,.gc-4,.gc-5,.gc-6,.gc-8,.gc-12 { grid-column:span 1; }
+      .prereq-box { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page-root">
+
+  <!-- ── TOPNAV ─────────────────────────────────────────── -->
+  <header class="topnav" role="banner">
+    <a href="/admin/dashboard" class="nav-brand" aria-label="EduGate Admin">
+      <div class="nav-logo" aria-hidden="true">A</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Admin Console</small>
+      </div>
+    </a>
+
+    <nav class="nav-center" aria-label="Điều hướng chính">
+      <a href="/admin/dashboard" class="nav-pill active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/courses" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Khóa học
+      </a>
+      <a href="/reports" class="nav-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Báo cáo
+      </a>
+    </nav>
+
+    <div class="nav-right">
+      <div class="user-chip">
+        <div class="user-avatar" aria-hidden="true">
+          <%= String(currentUser.fullName || currentUser.Username || 'A').charAt(0).toUpperCase() %>
+        </div>
+        <span class="user-name"><%= currentUser.fullName || currentUser.Username %></span>
+        <span class="role-admin">Admin</span>
+      </div>
+
+      <form method="POST" action="/logout" style="display:inline"
+            onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- ── MAIN ──────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <%= error %>
+      </div>
+    <% } %>
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <%= success %>
+      </div>
+    <% } %>
+
+    <!-- ── HERO ──────────────────────────────────────── -->
+    <div class="hero-banner" role="region" aria-label="Trang quản trị">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Admin Console
+          </div>
+          <h1 class="hero-title">
+            Quản trị<br>
+            <span class="gradient-text">hệ thống LMS</span>
+          </h1>
+          <p class="hero-subtitle" style="margin-top:10px;">
+            Xin chào, <strong style="color:#fbbf24;"><%= currentUser.fullName || currentUser.Username %></strong> —
+            Quản lý khoa, môn học, tài khoản người dùng và khóa học trên toàn hệ thống.
+          </p>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="hero-stat-mini">
+            <strong><%= departments.length %></strong>
+            <span>Khoa</span>
+          </div>
+          <div class="hero-stat-mini">
+            <strong><%= subjects.length %></strong>
+            <span>Môn học</span>
+          </div>
+          <div class="hero-stat-mini">
+            <strong><%= users.length %></strong>
+            <span>Người dùng</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STAT GRID ──────────────────────────────────── -->
+    <div class="stat-grid" role="list" aria-label="Thống kê hệ thống">
+      <div class="stat-card" role="listitem">
+        <div class="stat-icon si-indigo">🏛️</div>
+        <div class="stat-value"><%= departments.length %></div>
+        <div class="stat-label">Khoa</div>
+        <div class="stat-hint">Đang hoạt động trong hệ thống</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-icon si-emerald">📘</div>
+        <div class="stat-value"><%= subjects.length %></div>
+        <div class="stat-label">Môn học</div>
+        <div class="stat-hint">Tổng môn học đã tạo</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-icon si-violet">👥</div>
+        <div class="stat-value"><%= users.length %></div>
+        <div class="stat-label">Người dùng</div>
+        <div class="stat-hint">Giảng viên và sinh viên</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-icon si-amber">👨‍🏫</div>
+        <div class="stat-value"><%= lecturers.length %></div>
+        <div class="stat-label">Giảng viên</div>
+        <div class="stat-hint">Sẵn sàng phụ trách khóa học</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BLOCK 1: TẠO KHOA
+    ══════════════════════════════════════════════════════ -->
+    <div class="section-block">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-head-icon phi-indigo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div>
+              <div class="panel-title">Quản lý Khoa</div>
+              <div class="panel-sub">Tạo mới và xem danh sách các khoa trong hệ thống</div>
+            </div>
+          </div>
+          <span class="count-pill"><%= departments.length %> khoa</span>
+        </div>
+
+        <div class="panel-body">
+          <form method="POST" action="/admin/departments" aria-label="Form tạo khoa mới">
+            <div class="form-grid">
+              <div class="form-group gc-2">
+                <label class="form-label" for="Dept_ID">Mã khoa</label>
+                <input type="number" id="Dept_ID" name="Dept_ID" class="form-input" min="1" placeholder="Tự động">
+                <div class="form-hint">Có thể bỏ trống.</div>
+              </div>
+
+              <div class="form-group gc-4">
+                <label class="form-label" for="Dept_name">Tên khoa <span style="color:var(--rose-400)">*</span></label>
+                <input type="text" id="Dept_name" name="Dept_name" class="form-input" placeholder="Ví dụ: Khoa Công nghệ thông tin" required>
+              </div>
+
+              <div class="form-group gc-3">
+                <label class="form-label" for="Founding_date">Ngày thành lập</label>
+                <input type="date" id="Founding_date" name="Founding_date" class="form-input">
+              </div>
+
+              <div class="form-group gc-3">
+                <label class="form-label" for="Head_ID">Trưởng khoa</label>
+                <select id="Head_ID" name="Head_ID" class="form-select">
+                  <option value="">— Chưa chọn —</option>
+                  <% lecturers.forEach(l => { %>
+                    <option value="<%= l.Lecturer_ID %>"><%= l.Lecturer_display_name || l.Full_name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="gc-12">
+                <button class="btn btn-primary" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Thêm khoa
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Departments table -->
+        <div class="table-wrap">
+          <table aria-label="Danh sách khoa">
+            <thead>
+              <tr>
+                <th>Mã khoa</th>
+                <th>Tên khoa</th>
+                <th>Ngày thành lập</th>
+                <th>Trưởng khoa</th>
+                <th>Nhiệm kỳ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (departments.length === 0) { %>
+                <tr class="empty-row"><td colspan="5">Chưa có khoa nào trong hệ thống.</td></tr>
+              <% } %>
+              <% departments.forEach(d => { %>
+                <tr>
+                  <td class="td-id"><%= d.Dept_ID %></td>
+                  <td class="td-bold"><%= d.Dept_name %></td>
+                  <td><%= d.Founding_date ? new Date(d.Founding_date).toLocaleDateString('vi-VN') : 'Chưa cập nhật' %></td>
+                  <td><%= d.Head_name || 'Chưa phân công' %></td>
+                  <td style="color:var(--txt-soft); font-size:12.5px;">
+                    <% if (d.Head_ID && d.Head_start_date && d.Head_end_date) { %>
+                      <%= new Date(d.Head_start_date).toLocaleDateString('vi-VN') %> → <%= new Date(d.Head_end_date).toLocaleDateString('vi-VN') %>
+                    <% } else if (d.Head_ID) { %>
+                      <span style="color:var(--amber-500); font-style:italic;">Thiếu dữ liệu nhiệm kỳ</span>
+                    <% } else { %>
+                      —
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BLOCK 2: DANH SÁCH NGƯỜI DÙNG
+    ══════════════════════════════════════════════════════ -->
+    <div class="section-block">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-head-icon phi-violet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="panel-title">Danh sách người dùng</div>
+              <div class="panel-sub">Tất cả tài khoản trong hệ thống</div>
+            </div>
+          </div>
+          <span class="count-pill count-pill-violet"><%= users.length %> người dùng</span>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Danh sách người dùng">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Vai trò</th>
+                <th>Địa chỉ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(u => { %>
+                <tr>
+                  <td class="td-id"><%= u.User_ID %></td>
+                  <td><%= u.Username %></td>
+                  <td class="td-bold"><%= u.Full_name %></td>
+                  <td style="color:var(--txt-soft)"><%= u.Email %></td>
+                  <td>
+                    <% if (u.User_role === 'Lecturer') { %>
+                      <span class="role-badge rb-lecturer">Giảng viên</span>
+                    <% } else { %>
+                      <span class="role-badge rb-student">Sinh viên</span>
+                    <% } %>
+                  </td>
+                  <td style="color:var(--txt-soft)"><%= u.Address || '—' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BLOCK 3: TẠO MÔN HỌC
+    ══════════════════════════════════════════════════════ -->
+    <div class="section-block">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-head-icon phi-emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div>
+              <div class="panel-title">Tạo môn học</div>
+              <div class="panel-sub">Thêm môn học mới vào hệ thống</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <form method="POST" action="/admin/subjects" aria-label="Form tạo môn học">
+            <div class="form-grid">
+              <div class="form-group gc-6">
+                <label class="form-label">Tên môn học <span style="color:var(--rose-400)">*</span></label>
+                <input type="text" name="Subject_name" class="form-input" placeholder="Ví dụ: Lập trình hướng đối tượng" required>
+              </div>
+
+              <div class="form-group gc-2">
+                <label class="form-label">Số tín chỉ <span style="color:var(--rose-400)">*</span></label>
+                <input type="number" name="Credits" class="form-input" min="1" max="4" placeholder="1–4" required>
+              </div>
+
+              <div class="form-group gc-4">
+                <label class="form-label">Khoa phụ trách <span style="color:var(--rose-400)">*</span></label>
+                <select name="Dept_ID" class="form-select" required>
+                  <option value="">— Chọn khoa —</option>
+                  <% departments.forEach(d => { %>
+                    <option value="<%= d.Dept_ID %>"><%= d.Dept_name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="form-group gc-12">
+                <label class="form-label">Syllabus / Link PDF <span style="color:var(--rose-400)">*</span></label>
+                <input type="text" name="Syllabus" class="form-input" placeholder="https://... hoặc tên file.pdf" required>
+              </div>
+
+              <div class="form-group gc-12">
+                <label class="form-label">Môn tiên quyết</label>
+                <div class="prereq-box">
+                  <% if (subjects.length === 0) { %>
+                    <div style="color:var(--txt-muted);font-size:13.5px;">Chưa có môn học nào để chọn làm tiên quyết.</div>
+                  <% } %>
+                  <% subjects.forEach(s => { %>
+                    <div class="check-item">
+                      <input class="check-input" type="checkbox" name="Prerequisites" value="<%= s.Subject_ID %>" id="pre_<%= s.Subject_ID %>">
+                      <label class="check-label" for="pre_<%= s.Subject_ID %>"><%= s.Subject_name %></label>
+                    </div>
+                  <% }) %>
+                </div>
+                <div class="form-hint">Nếu môn học không có môn tiên quyết thì bỏ trống.</div>
+              </div>
+
+              <div class="gc-12">
+                <button class="btn btn-primary" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Tạo môn học
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BLOCK 4: TẠO KHÓA HỌC
+    ══════════════════════════════════════════════════════ -->
+    <div class="section-block">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-head-icon phi-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div>
+              <div class="panel-title">Tạo khóa học & chỉ định giảng viên</div>
+              <div class="panel-sub">Tạo khóa học mới và giao cho giảng viên phụ trách</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <form method="POST" action="/admin/courses" aria-label="Form tạo khóa học">
+            <div class="form-grid">
+              <div class="form-group gc-6">
+                <label class="form-label">Tên khóa học <span style="color:var(--rose-400)">*</span></label>
+                <input type="text" name="Course_name" class="form-input" placeholder="Ví dụ: Lập trình OOP – Nhóm 1" required>
+              </div>
+
+              <div class="form-group gc-3">
+                <label class="form-label">Môn học <span style="color:var(--rose-400)">*</span></label>
+                <select name="Subject_ID" class="form-select" required>
+                  <option value="">— Chọn môn —</option>
+                  <% subjects.forEach(s => { %>
+                    <option value="<%= s.Subject_ID %>"><%= s.Subject_name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="form-group gc-3">
+                <label class="form-label">Giảng viên phụ trách <span style="color:var(--rose-400)">*</span></label>
+                <select name="Lecturer_ID" class="form-select" required>
+                  <option value="">— Chọn giảng viên —</option>
+                  <% lecturers.forEach(l => { %>
+                    <option value="<%= l.Lecturer_ID %>"><%= l.Full_name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="form-group gc-6">
+                <label class="form-label">Ngày bắt đầu <span style="color:var(--rose-400)">*</span></label>
+                <input type="date" name="Start_date" class="form-input" required>
+              </div>
+
+              <div class="form-group gc-6">
+                <label class="form-label">Ngày kết thúc <span style="color:var(--rose-400)">*</span></label>
+                <input type="date" name="End_date" class="form-input" required>
+              </div>
+
+              <div class="form-group gc-12">
+                <label class="form-label">Mô tả</label>
+                <textarea name="Description" class="form-textarea" placeholder="Mô tả ngắn về khóa học…"></textarea>
+              </div>
+
+              <div class="gc-12">
+                <button class="btn btn-success" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Tạo khóa học
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BLOCK 5: QUẢN LÝ MÔN HỌC (TABLE)
+    ══════════════════════════════════════════════════════ -->
+    <div class="section-block">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-head-icon phi-rose">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            </div>
+            <div>
+              <div class="panel-title">Quản lý môn học</div>
+              <div class="panel-sub">Danh sách tất cả môn học và khóa học liên quan</div>
+            </div>
+          </div>
+          <span class="count-pill count-pill-amber"><%= subjects.length %> môn học</span>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Danh sách môn học">
+            <thead>
+              <tr>
+                <th>Subject ID</th>
+                <th>Môn học</th>
+                <th>Khoa</th>
+                <th>Tín chỉ</th>
+                <th>Syllabus</th>
+                <th>Số KH</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% subjects.forEach(s => { %>
+                <tr>
+                  <td class="td-id"><%= s.Subject_ID %></td>
+                  <td class="td-bold"><%= s.Subject_name %></td>
+                  <td><%= s.Dept_name %></td>
+                  <td>
+                    <span style="background:rgba(99,102,241,0.10);color:var(--indigo-600);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;">
+                      <%= s.Credits %> TC
+                    </span>
+                  </td>
+                  <td>
+                    <a href="<%= s.Syllabus %>" target="_blank" rel="noopener"
+                       style="color:var(--indigo-600);font-weight:600;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      Xem
+                    </a>
+                  </td>
+                  <td>
+                    <span style="font-weight:700;color:var(--txt-head);"><%= s.Total_courses || 0 %></span>
+                  </td>
+                  <td>
+                    <a href="/admin/subjects/<%= s.Subject_ID %>/courses" class="btn btn-primary btn-sm">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      Xem khóa học
+                    </a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /.page-root -->
+
+</body>
+</html>

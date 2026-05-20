@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Tạo tài khoản</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── DESIGN TOKENS (nhất quán với toàn bộ EduGate) ─── */
+    :root {
+      --indigo-900: #1e1b4b;
+      --indigo-700: #3730a3;
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --teal-400:   #2dd4bf;
+      --emerald-500:#10b981;
+      --rose-400:   #fb7185;
+      --amber-400:  #fbbf24;
+
+      --bg-page:   #f4f6ff;
+      --bg-card:   #ffffff;
+      --bg-soft:   #f8f9ff;
+      --bg-field:  #f8f9ff;
+      --bg-nav:    #0d0b1e;
+
+      --txt-head:  #0d0c22;
+      --txt-body:  #374151;
+      --txt-soft:  #6b7280;
+      --txt-muted: #9ca3af;
+      --txt-light: #f1f0fe;
+
+      --border:      #e5e7f0;
+      --border-soft: #eef0f8;
+
+      --shadow-sm:    0 2px 8px  rgba(15,23,42,0.06);
+      --shadow-md:    0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg:    0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo:0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px; --r-sm: 12px;
+      --r-md: 16px; --r-lg: 22px;
+      --r-xl: 28px; --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── PAGE SHELL ─────────────────────────────────────── */
+    .page-root {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── TOPNAV (nhất quán 100% với dashboard/profile) ──── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+      flex-shrink: 0;
+    }
+    .topnav::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; position: relative; flex-shrink: 0;
+    }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid; place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800; font-size: 17px; color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px; font-weight: 700; color: #f1f0fe; letter-spacing: -0.01em;
+    }
+    .nav-wordmark small {
+      display: block; font-size: 11px; color: #6b7191;
+      font-weight: 400; margin-top: 1px;
+      font-family: "Be Vietnam Pro", sans-serif;
+    }
+    .nav-login-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 10px;
+      font-family: inherit; font-size: 13.5px; font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      text-decoration: none;
+      transition: background 0.18s, color 0.18s;
+      position: relative;
+    }
+    .nav-login-link:hover { background: rgba(255,255,255,0.13); color: #fff; }
+    .nav-login-link svg { width: 14px; height: 14px; }
+
+    /* ─── MAIN AREA ──────────────────────────────────────── */
+    .main-area {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 36px 20px 52px;
+    }
+
+    /* ─── REGISTER WRAPPER ───────────────────────────────── */
+    .register-wrapper {
+      width: 100%;
+      max-width: 1160px;
+      background: var(--bg-card);
+      border-radius: var(--r-2xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      border: 1px solid var(--border);
+    }
+
+    /* ─── LEFT PANEL (form) ──────────────────────────────── */
+    .register-left {
+      padding: 44px 52px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Brand pill */
+    .brand-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--indigo-100); color: var(--indigo-600);
+      border-radius: 999px; padding: 6px 14px;
+      font-size: 12.5px; font-weight: 700;
+      margin-bottom: 18px; width: fit-content;
+      letter-spacing: 0.01em;
+    }
+    .brand-pill::before {
+      content: "✦"; font-size: 10px;
+    }
+
+    .register-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: clamp(26px, 3.5vw, 34px);
+      font-weight: 800;
+      color: var(--txt-head);
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .register-subtitle {
+      color: var(--txt-soft);
+      font-size: 14.5px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      max-width: 480px;
+    }
+
+    /* ─── ALERT ──────────────────────────────────────────── */
+    .alert-bar {
+      display: flex; align-items: flex-start; gap: 10px;
+      border-radius: var(--r-md); padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 13.5px; line-height: 1.55;
+      margin-bottom: 20px;
+      animation: alert-in 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar svg { flex-shrink: 0; margin-top: 1px; }
+    .alert-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+
+    /* ─── INFO NOTE ──────────────────────────────────────── */
+    .role-note {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-md);
+      padding: 12px 16px;
+      font-size: 13.5px; color: var(--txt-soft);
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+    .role-note svg { flex-shrink: 0; color: var(--indigo-500); margin-top: 2px; }
+    .role-note strong { color: var(--txt-body); }
+
+    /* ─── SECTION LABEL (nhất quán với profile) ─────────── */
+    .section-label {
+      display: flex; align-items: center; gap: 10px;
+      margin: 22px 0 14px;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+    .section-bar {
+      width: 3px; height: 17px; border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #8b5cf6);
+      flex-shrink: 0;
+    }
+    .section-label-text {
+      font-size: 12px; font-weight: 800;
+      color: var(--indigo-600);
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+
+    /* ─── FORM GRID ──────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-grid .span-2 { grid-column: 1 / -1; }
+
+    /* ─── FIELD ──────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 13px; font-weight: 700;
+      color: var(--txt-body);
+    }
+    .field .hint {
+      font-size: 12px; color: var(--txt-muted);
+      margin-top: 2px;
+    }
+
+    /* ─── INPUT / SELECT ─────────────────────────────────── */
+    .form-input, .form-select {
+      width: 100%;
+      height: 44px;
+      padding: 0 13px;
+      background: var(--bg-field);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--txt-head);
+      outline: none;
+      transition: border-color 0.16s, box-shadow 0.16s, background 0.16s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: var(--txt-muted); }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--indigo-400);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.13);
+    }
+    .form-input.input-error, .form-select.input-error {
+      border-color: #fda4af;
+      box-shadow: 0 0 0 3px rgba(251,113,133,0.12);
+    }
+
+    /* select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: "";
+      position: absolute; right: 13px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--txt-muted);
+      pointer-events: none;
+    }
+    .select-wrap .form-select { padding-right: 32px; cursor: pointer; }
+
+    /* password toggle */
+    .password-wrap { position: relative; }
+    .password-wrap .form-input { padding-right: 44px; }
+    .toggle-password {
+      position: absolute; right: 8px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      padding: 8px; cursor: pointer;
+      color: var(--txt-muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.16s;
+    }
+    .toggle-password:hover { color: var(--indigo-500); }
+    .toggle-password svg { width: 19px; height: 19px; }
+
+    /* ─── LECTURER BLOCK (hidden by default) ─────────────── */
+    .lecturer-block {
+      display: none;
+      grid-column: 1 / -1;
+    }
+    .lecturer-block.visible { display: contents; }
+
+    /* ─── DIVIDER ────────────────────────────────────────── */
+    .form-divider {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: var(--border-soft);
+      margin: 4px 0;
+    }
+
+    /* ─── SUBMIT BUTTON ──────────────────────────────────── */
+    .btn-submit {
+      width: 100%; height: 50px;
+      border: none; border-radius: var(--r-md);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-indigo);
+      transition: transform 0.18s, box-shadow 0.18s;
+      margin-top: 22px;
+      letter-spacing: -0.01em;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(99,102,241,0.36);
+    }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit svg { width: 16px; height: 16px; }
+
+    /* ─── FOOTER LINK ────────────────────────────────────── */
+    .auth-footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 13.5px;
+      color: var(--txt-soft);
+    }
+    .auth-footer a {
+      color: var(--indigo-500); font-weight: 700;
+      text-decoration: none;
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    /* ─── RIGHT PANEL (illustration) ────────────────────── */
+    .register-right {
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%,   rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 100% at 100% 100%, rgba(139,92,246,0.22) 0%, transparent 50%),
+        #0d0b1e;
+      display: flex; align-items: center; justify-content: center;
+      padding: 44px 36px;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .register-right::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    /* Image card */
+    .hero-card {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 380px;
+      aspect-ratio: 4/3;
+      border-radius: var(--r-xl);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: 0 24px 56px rgba(13,11,30,0.38);
+    }
+    .hero-image {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+    }
+    /* fallback gradient khi ảnh không tải */
+    .hero-image-fallback {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(139,92,246,0.5));
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Right panel text */
+    .right-content { position: relative; z-index: 2; text-align: center; }
+    .right-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px; padding: 6px 14px;
+      font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.80);
+      margin-bottom: 14px;
+    }
+    .right-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: clamp(22px, 2.5vw, 28px);
+      font-weight: 800; color: #f1f0fe;
+      letter-spacing: -0.035em; line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .right-sub {
+      font-size: 14px; color: rgba(255,255,255,0.58);
+      line-height: 1.65; max-width: 300px; margin: 0 auto;
+    }
+    .right-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 18px;
+    }
+    .right-chip {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 999px; padding: 5px 12px;
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.70);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .register-wrapper { grid-template-columns: 1fr; }
+      .register-right {
+        min-height: 300px; padding: 32px 24px;
+        flex-direction: row; gap: 24px; flex-wrap: wrap;
+        justify-content: center;
+        order: -1;
+      }
+      .hero-card { max-width: 260px; }
+      .right-content { text-align: left; }
+    }
+    @media (max-width: 640px) {
+      .main-area { padding: 20px 14px 40px; }
+      .register-left { padding: 28px 22px; }
+      .register-right { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .span-2 { grid-column: 1; }
+      .register-wrapper { border-radius: var(--r-xl); }
+    }
+    @media (max-width: 400px) {
+      .topnav { padding: 0 16px; }
+      .nav-wordmark small { display: none; }
+    }
+  </style>
+</head>
+
+<%
+  /* Biến động từ backend:
+       departments : Array  – danh sách khoa { Dept_ID, Dept_name }
+       majors      : Array  – danh sách chuyên ngành { Major_ID, Major_name }
+       form        : Object – giá trị form cũ khi có lỗi (re-populate)
+       success     : String|null
+       error       : String|null
+  */
+  const f = typeof form !== 'undefined' && form ? form : {};
+%>
+
+<body>
+<div class="page-root">
+
+  <!-- ══ TOPNAV ════════════════════════════════════════════ -->
+  <nav class="topnav" aria-label="Điều hướng">
+    <a href="/" class="nav-brand" aria-label="EduGate – Trang chủ">
+      <div class="nav-logo" aria-hidden="true">E</div>
+      <div class="nav-wordmark">
+        EduGate
+        <small>Learning Management System</small>
+      </div>
+    </a>
+    <a href="/login" class="nav-login-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+      Đăng nhập
+    </a>
+  </nav>
+
+  <!-- ══ MAIN ══════════════════════════════════════════════ -->
+  <div class="main-area">
+    <div class="register-wrapper">
+
+      <!-- ── LEFT: Form ───────────────────────────────── -->
+      <div class="register-left">
+
+        <div class="brand-pill">LMS EduGate</div>
+
+        <h1 class="register-title">Tạo tài khoản</h1>
+        <p class="register-subtitle">
+          Đăng ký để bắt đầu hành trình học tập và giảng dạy trên EduGate.
+        </p>
+
+        <!-- Info note -->
+        <div class="role-note" role="note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>
+            Chỉ có thể tạo tài khoản <strong>sinh viên</strong> hoặc <strong>giảng viên</strong>.
+            Tài khoản quản trị viên được tạo mặc định trong hệ thống.
+          </span>
+        </div>
+
+        <!-- Alerts – dữ liệu động -->
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert-bar alert-success" role="alert">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span><%= success %></span>
+          </div>
+        <% } %>
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert-bar alert-danger" role="alert">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span><%= error %></span>
+          </div>
+        <% } %>
+
+        <!-- ── FORM ──────────────────────────────────── -->
+        <form method="POST" action="/register" novalidate id="register-form">
+
+          <!-- §1 Đăng nhập -->
+          <div class="section-label">
+            <div class="section-bar" aria-hidden="true"></div>
+            <span class="section-label-text">Thông tin đăng nhập</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="Username">Tên đăng nhập <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <input type="text" id="Username" name="Username" class="form-input"
+                     value="<%= f.Username || '' %>"
+                     placeholder="vd: nguyenvana" required autocomplete="username">
+            </div>
+
+            <div class="field">
+              <label for="Email">Email <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <input type="email" id="Email" name="Email" class="form-input"
+                     value="<%= f.Email || '' %>"
+                     placeholder="email@example.com" required autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="Password">Mật khẩu <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <div class="password-wrap">
+                <input type="password" id="Password" name="Password" class="form-input"
+                       placeholder="Ít nhất 12 ký tự" required autocomplete="new-password"
+                       minlength="12">
+                <button type="button" class="toggle-password" title="Hiện/Ẩn mật khẩu">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <span class="hint">Tối thiểu 12 ký tự, gồm chữ hoa, thường, số & ký tự đặc biệt</span>
+            </div>
+
+            <div class="field">
+              <label for="Confirm_password">Nhập lại mật khẩu <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <div class="password-wrap">
+                <input type="password" id="Confirm_password" name="Confirm_password" class="form-input"
+                       placeholder="Xác nhận mật khẩu" required autocomplete="new-password">
+                <button type="button" class="toggle-password" title="Hiện/Ẩn mật khẩu">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="User_role">Vai trò <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <div class="select-wrap">
+                <select id="User_role" name="User_role" class="form-select" required>
+                  <option value="">-- Chọn vai trò --</option>
+                  <option value="Student"  <%= f.User_role === 'Student'  ? 'selected' : '' %>>Sinh viên</option>
+                  <option value="Lecturer" <%= f.User_role === 'Lecturer' ? 'selected' : '' %>>Giảng viên</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- §2 Cá nhân -->
+          <div class="section-label">
+            <div class="section-bar" aria-hidden="true"></div>
+            <span class="section-label-text">Thông tin cá nhân</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field span-2">
+              <label for="Full_name">Họ và tên <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <input type="text" id="Full_name" name="Full_name" class="form-input"
+                     value="<%= f.Full_name || '' %>"
+                     placeholder="Nguyễn Văn A" required autocomplete="name">
+            </div>
+
+            <div class="field">
+              <label for="SSN">SSN / CCCD <span aria-hidden="true" style="color:var(--rose-400)">*</span></label>
+              <input type="text" id="SSN" name="SSN" class="form-input"
+                     value="<%= f.SSN || '' %>"
+                     placeholder="12 chữ số" required maxlength="12" pattern="[0-9]{12}">
+              <span class="hint">Căn cước công dân 12 chữ số</span>
+            </div>
+
+            <div class="field">
+              <label for="Phone_number">Số điện thoại</label>
+              <input type="tel" id="Phone_number" name="Phone_number" class="form-input"
+                     value="<%= f.Phone_number || '' %>"
+                     placeholder="0xxxxxxxxx" maxlength="10" pattern="0[0-9]{9}">
+              <span class="hint">Gồm 10 chữ số, bắt đầu bằng 0</span>
+            </div>
+
+            <div class="field span-2">
+              <label for="Address">Địa chỉ</label>
+              <input type="text" id="Address" name="Address" class="form-input"
+                     value="<%= f.Address || '' %>"
+                     placeholder="Số nhà, đường, quận/huyện, tỉnh/thành" autocomplete="street-address">
+            </div>
+          </div>
+
+          <!-- §3 Học vụ -->
+          <div class="section-label">
+            <div class="section-bar" aria-hidden="true"></div>
+            <span class="section-label-text">Thông tin học vụ</span>
+          </div>
+
+          <div class="form-grid">
+            <!-- Khoa – dữ liệu động -->
+            <div class="field">
+              <label for="Dept_ID">Khoa</label>
+              <div class="select-wrap">
+                <select id="Dept_ID" name="Dept_ID" class="form-select">
+                  <option value="">-- Chọn khoa --</option>
+                  <% if (typeof departments !== 'undefined') { %>
+                    <% departments.forEach(d => { %>
+                      <option value="<%= d.Dept_ID %>" <%= String(f.Dept_ID || '') === String(d.Dept_ID) ? 'selected' : '' %>>
+                        <%= d.Dept_name %>
+                      </option>
+                    <% }) %>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chuyên ngành – dữ liệu động -->
+            <div class="field">
+              <label for="Major_ID">Chuyên ngành</label>
+              <div class="select-wrap">
+                <select id="Major_ID" name="Major_ID" class="form-select">
+                  <option value="">-- Chọn chuyên ngành --</option>
+                  <% if (typeof majors !== 'undefined') { %>
+                    <% majors.forEach(m => { %>
+                      <option value="<%= m.Major_ID %>" <%= String(f.Major_ID || '') === String(m.Major_ID) ? 'selected' : '' %>>
+                        <%= m.Major_name %>
+                      </option>
+                    <% }) %>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chỉ hiện với Giảng viên – JS toggle -->
+            <div class="field" id="field-degree" style="display:none">
+              <label for="Academic_degree">Học vị</label>
+              <div class="select-wrap">
+                <select id="Academic_degree" name="Academic_degree" class="form-select">
+                  <option value="">-- Chọn học vị --</option>
+                  <option value="CN"  <%= f.Academic_degree === 'CN'  ? 'selected' : '' %>>Cử nhân (CN)</option>
+                  <option value="KS"  <%= f.Academic_degree === 'KS'  ? 'selected' : '' %>>Kỹ sư (KS)</option>
+                  <option value="ThS" <%= f.Academic_degree === 'ThS' ? 'selected' : '' %>>Thạc sỹ (ThS)</option>
+                  <option value="TS"  <%= f.Academic_degree === 'TS'  ? 'selected' : '' %>>Tiến sỹ (TS)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field" id="field-title" style="display:none">
+              <label for="Academic_title">Học hàm</label>
+              <div class="select-wrap">
+                <select id="Academic_title" name="Academic_title" class="form-select">
+                  <option value="">Không có</option>
+                  <option value="PGS" <%= f.Academic_title === 'PGS' ? 'selected' : '' %>>Phó giáo sư (PGS)</option>
+                  <option value="GS"  <%= f.Academic_title === 'GS'  ? 'selected' : '' %>>Giáo sư (GS)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field span-2" id="field-exp" style="display:none">
+              <label for="Teaching_experience">Kinh nghiệm giảng dạy (năm)</label>
+              <input type="number" id="Teaching_experience" name="Teaching_experience"
+                     class="form-input" min="0" max="60" step="1"
+                     value="<%= f.Teaching_experience || 0 %>"
+                     placeholder="Số năm kinh nghiệm">
+              <span class="hint">Số năm kinh nghiệm (0 – 60)</span>
+            </div>
+
+            <!-- ── Văn bằng (chỉ Giảng viên) ── -->
+            <div class="field span-2" id="field-degrees" style="display:none">
+              <label>Văn bằng <span style="font-weight:400;color:var(--txt-muted);font-size:12px;">(không bắt buộc)</span></label>
+              <div id="degrees-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+                <% 
+                  var fDegrees = Array.isArray(f.degrees) ? f.degrees : (f.degrees ? [f.degrees] : []);
+                  fDegrees.forEach(function(deg) { 
+                %>
+                  <div class="degree-row" style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" name="degrees[]" value="<%= deg %>"
+                           class="form-input degree-input"
+                           placeholder="Vd: Thạc sĩ Khoa học Máy tính – ĐH Bách Khoa"
+                           maxlength="100" style="flex:1;">
+                    <button type="button" class="btn-rm-degree" onclick="removeDegreeRow(this)" title="Xóa dòng này"
+                      style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(251,113,133,0.4);background:rgba(251,113,133,0.08);color:#fb7185;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                <% }) %>
+              </div>
+              <button type="button" id="btn-add-degree" onclick="addDegreeRow()"
+                style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px dashed rgba(99,102,241,0.45);background:rgba(99,102,241,0.06);color:var(--indigo-400);font-size:13px;font-weight:600;cursor:pointer;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Thêm văn bằng
+              </button>
+              <span class="hint" style="margin-top:6px;display:block;">Mỗi dòng một văn bằng. Bỏ trống nếu chưa có.</span>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-submit" id="btn-submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+            Tạo tài khoản
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          Đã có tài khoản?
+          <a href="/login">Đăng nhập ngay</a>
+        </div>
+      </div><!-- /.register-left -->
+
+      <!-- ── RIGHT: Illustration ──────────────────────── -->
+      <div class="register-right" aria-hidden="true">
+        <div class="hero-card">
+          <svg viewBox="0 0 380 285" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block;">
+            <defs>
+              <!-- Background gradient -->
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#1a1744"/>
+                <stop offset="100%" stop-color="#0d0b1e"/>
+              </linearGradient>
+              <!-- Indigo glow -->
+              <radialGradient id="glow1" cx="30%" cy="35%" r="55%">
+                <stop offset="0%"   stop-color="#6366f1" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+              </radialGradient>
+              <!-- Violet glow -->
+              <radialGradient id="glow2" cx="80%" cy="75%" r="50%">
+                <stop offset="0%"   stop-color="#8b5cf6" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+              </radialGradient>
+              <!-- Teal accent -->
+              <radialGradient id="glow3" cx="70%" cy="15%" r="35%">
+                <stop offset="0%"   stop-color="#2dd4bf" stop-opacity="0.20"/>
+                <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+              </radialGradient>
+              <!-- Screen shine -->
+              <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%"   stop-color="#2a2760"/>
+                <stop offset="100%" stop-color="#161430"/>
+              </linearGradient>
+              <!-- Progress bar gradient -->
+              <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#6366f1"/>
+                <stop offset="60%"  stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#2dd4bf"/>
+              </linearGradient>
+              <!-- Book spine gradient -->
+              <linearGradient id="book1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#4338ca"/>
+              </linearGradient>
+              <linearGradient id="book2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#6d28d9"/>
+              </linearGradient>
+              <linearGradient id="book3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#2dd4bf"/>
+                <stop offset="100%" stop-color="#0d9488"/>
+              </linearGradient>
+              <!-- Star gradient -->
+              <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+              <!-- Card glow filter -->
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <clipPath id="cardClip">
+                <rect width="380" height="285" rx="22"/>
+              </clipPath>
+            </defs>
+
+            <g clip-path="url(#cardClip)">
+              <!-- ── Background ── -->
+              <rect width="380" height="285" fill="url(#bgGrad)"/>
+              <rect width="380" height="285" fill="url(#glow1)"/>
+              <rect width="380" height="285" fill="url(#glow2)"/>
+              <rect width="380" height="285" fill="url(#glow3)"/>
+
+              <!-- Grid lines -->
+              <g stroke="rgba(255,255,255,0.04)" stroke-width="1">
+                <line x1="0" y1="36"  x2="380" y2="36"/>
+                <line x1="0" y1="72"  x2="380" y2="72"/>
+                <line x1="0" y1="108" x2="380" y2="108"/>
+                <line x1="0" y1="144" x2="380" y2="144"/>
+                <line x1="0" y1="180" x2="380" y2="180"/>
+                <line x1="0" y1="216" x2="380" y2="216"/>
+                <line x1="0" y1="252" x2="380" y2="252"/>
+                <line x1="36"  y1="0" x2="36"  y2="285"/>
+                <line x1="72"  y1="0" x2="72"  y2="285"/>
+                <line x1="108" y1="0" x2="108" y2="285"/>
+                <line x1="144" y1="0" x2="144" y2="285"/>
+                <line x1="180" y1="0" x2="180" y2="285"/>
+                <line x1="216" y1="0" x2="216" y2="285"/>
+                <line x1="252" y1="0" x2="252" y2="285"/>
+                <line x1="288" y1="0" x2="288" y2="285"/>
+                <line x1="324" y1="0" x2="324" y2="285"/>
+                <line x1="360" y1="0" x2="360" y2="285"/>
+              </g>
+
+              <!-- ── Floating orbs ── -->
+              <circle cx="60"  cy="55"  r="40" fill="#6366f1" opacity="0.12" filter="url(#softGlow)"/>
+              <circle cx="330" cy="230" r="55" fill="#8b5cf6" opacity="0.10" filter="url(#softGlow)"/>
+              <circle cx="300" cy="40"  r="28" fill="#2dd4bf" opacity="0.13" filter="url(#softGlow)"/>
+
+              <!-- ══════════════════════════════════════════
+                   LAPTOP / MONITOR ILLUSTRATION
+              ══════════════════════════════════════════ -->
+              <!-- Monitor body -->
+              <rect x="95" y="42" width="190" height="130" rx="10" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+              <!-- Screen bezel -->
+              <rect x="101" y="48" width="178" height="118" rx="7" fill="url(#screenGrad)"/>
+
+              <!-- Screen content: header bar -->
+              <rect x="101" y="48" width="178" height="20" rx="7" fill="rgba(99,102,241,0.25)"/>
+              <rect x="101" y="60" width="178" height="8" fill="rgba(99,102,241,0.25)"/>
+              <!-- Dots -->
+              <circle cx="112" cy="58" r="3.5" fill="#fb7185" opacity="0.9"/>
+              <circle cx="122" cy="58" r="3.5" fill="#fbbf24" opacity="0.9"/>
+              <circle cx="132" cy="58" r="3.5" fill="#34d399" opacity="0.9"/>
+              <!-- URL bar -->
+              <rect x="141" y="53" width="100" height="10" rx="4" fill="rgba(255,255,255,0.10)"/>
+              <text x="148" y="61" font-size="6" fill="rgba(255,255,255,0.45)" font-family="monospace">edugate.edu.vn</text>
+
+              <!-- Dashboard widgets inside screen -->
+              <!-- Sidebar -->
+              <rect x="101" y="68" width="32" height="98" fill="rgba(99,102,241,0.18)"/>
+              <rect x="106" y="76" width="22" height="4" rx="2" fill="rgba(255,255,255,0.30)"/>
+              <rect x="106" y="85" width="18" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+              <rect x="106" y="93" width="20" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+              <rect x="106" y="101" width="16" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+              <rect x="106" y="109" width="21" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+              <rect x="103" y="85" width="2" height="3" rx="1" fill="#6366f1"/>
+              <rect x="103" y="101" width="2" height="3" rx="1" fill="#2dd4bf"/>
+
+              <!-- Main panel cards -->
+              <rect x="138" y="72" width="56" height="36" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+              <rect x="140" y="77" width="20" height="3" rx="1.5" fill="rgba(255,255,255,0.20)"/>
+              <text x="140" y="96" font-size="11" font-weight="bold" fill="#818cf8" font-family="'Plus Jakarta Sans',sans-serif">87%</text>
+              <rect x="140" y="100" width="52" height="3" rx="1.5" fill="rgba(99,102,241,0.25)"/>
+              <rect x="140" y="100" width="45" height="3" rx="1.5" fill="url(#progGrad)"/>
+
+              <rect x="199" y="72" width="56" height="36" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+              <rect x="201" y="77" width="22" height="3" rx="1.5" fill="rgba(255,255,255,0.20)"/>
+              <text x="201" y="96" font-size="11" font-weight="bold" fill="#2dd4bf" font-family="'Plus Jakarta Sans',sans-serif">12</text>
+              <rect x="201" y="100" width="51" height="3" rx="1.5" fill="rgba(45,212,191,0.20)"/>
+              <rect x="201" y="100" width="30" height="3" rx="1.5" fill="#2dd4bf" opacity="0.7"/>
+
+              <!-- Course list rows -->
+              <rect x="138" y="114" width="117" height="10" rx="3" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+              <rect x="142" y="117" width="6" height="4" rx="1" fill="#6366f1" opacity="0.9"/>
+              <rect x="152" y="118" width="40" height="2.5" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <rect x="220" y="118" width="16" height="2.5" rx="1" fill="rgba(45,212,191,0.6)"/>
+              <rect x="238" y="117" width="14" height="4" rx="2" fill="rgba(99,102,241,0.5)"/>
+
+              <rect x="138" y="127" width="117" height="10" rx="3" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+              <rect x="142" y="130" width="6" height="4" rx="1" fill="#8b5cf6" opacity="0.9"/>
+              <rect x="152" y="131" width="34" height="2.5" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <rect x="220" y="131" width="20" height="2.5" rx="1" fill="rgba(139,92,246,0.6)"/>
+              <rect x="238" y="130" width="14" height="4" rx="2" fill="rgba(139,92,246,0.5)"/>
+
+              <rect x="138" y="140" width="117" height="10" rx="3" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+              <rect x="142" y="143" width="6" height="4" rx="1" fill="#2dd4bf" opacity="0.9"/>
+              <rect x="152" y="144" width="45" height="2.5" rx="1" fill="rgba(255,255,255,0.25)"/>
+              <rect x="220" y="144" width="12" height="2.5" rx="1" fill="rgba(251,191,36,0.6)"/>
+              <rect x="238" y="143" width="14" height="4" rx="2" fill="rgba(251,191,36,0.4)"/>
+
+              <!-- Monitor stand -->
+              <rect x="179" y="172" width="22" height="8" rx="2" fill="rgba(255,255,255,0.12)"/>
+              <rect x="161" y="178" width="58" height="6" rx="3" fill="rgba(255,255,255,0.10)"/>
+
+              <!-- ══════════════════════════════════════════
+                   FLOATING CARDS (left & right of monitor)
+              ══════════════════════════════════════════ -->
+
+              <!-- LEFT: Achievement card -->
+              <g filter="url(#glow)" transform="translate(14, 88)">
+                <rect width="72" height="58" rx="10" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                <!-- Star icon -->
+                <polygon points="36,8 39.5,19 51,19 41.5,25.5 45,37 36,30 27,37 30.5,25.5 21,19 32.5,19"
+                         fill="url(#starGrad)" opacity="0.95"/>
+                <rect x="12" y="42" width="48" height="3" rx="1.5" fill="rgba(255,255,255,0.22)"/>
+                <rect x="20" y="49" width="32" height="2.5" rx="1" fill="rgba(255,255,255,0.12)"/>
+              </g>
+
+              <!-- RIGHT: Notification card -->
+              <g filter="url(#glow)" transform="translate(294, 72)">
+                <rect width="72" height="66" rx="10" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                <!-- Bell icon -->
+                <path d="M36 12 C30 12, 26 16, 26 22 L26 30 L22 34 L50 34 L46 30 L46 22 C46 16, 42 12, 36 12Z" fill="#8b5cf6" opacity="0.85"/>
+                <circle cx="36" cy="38" r="3.5" fill="#8b5cf6" opacity="0.85"/>
+                <!-- Notification dot -->
+                <circle cx="47" cy="14" r="5" fill="#fb7185"/>
+                <rect x="12" y="44" width="48" height="3" rx="1.5" fill="rgba(255,255,255,0.22)"/>
+                <rect x="18" y="51" width="36" height="2.5" rx="1.5" fill="rgba(255,255,255,0.22)"/>
+                <rect x="18" y="57" width="26" height="2.5" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+              </g>
+
+              <!-- ══════════════════════════════════════════
+                   BOTTOM ROW: Books + Progress ring + Avatar
+              ══════════════════════════════════════════ -->
+
+              <!-- Books stack -->
+              <g transform="translate(22, 194)">
+                <!-- Book 3 (back) -->
+                <rect x="18" y="4" width="46" height="58" rx="4" fill="url(#book3)" opacity="0.85"/>
+                <rect x="18" y="4" width="7" height="58" rx="2" fill="rgba(0,0,0,0.20)"/>
+                <!-- Book 2 (mid) -->
+                <rect x="8" y="0" width="46" height="58" rx="4" fill="url(#book2)"/>
+                <rect x="8" y="0" width="7" height="58" rx="2" fill="rgba(0,0,0,0.20)"/>
+                <!-- Book 1 (front) -->
+                <rect x="0" y="6" width="44" height="56" rx="4" fill="url(#book1)"/>
+                <rect x="0" y="6" width="7" height="56" rx="2" fill="rgba(0,0,0,0.20)"/>
+                <!-- Book lines (pages) -->
+                <rect x="12" y="14" width="26" height="2" rx="1" fill="rgba(255,255,255,0.40)"/>
+                <rect x="12" y="20" width="20" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+                <rect x="12" y="26" width="24" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+                <rect x="12" y="32" width="18" height="2" rx="1" fill="rgba(255,255,255,0.20)"/>
+                <!-- Bookmark -->
+                <rect x="30" y="6" width="6" height="14" fill="#fbbf24" opacity="0.9"/>
+                <polygon points="30,20 33,17 36,20" fill="#0d0b1e" opacity="0.5"/>
+              </g>
+
+              <!-- Progress ring -->
+              <g transform="translate(178, 196)">
+                <!-- Track -->
+                <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+                <!-- Progress arc (~75%) -->
+                <circle cx="26" cy="26" r="22" fill="none" stroke="url(#progGrad)" stroke-width="5"
+                        stroke-dasharray="103.67 34.56" stroke-dashoffset="27.5"
+                        stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                <text x="26" y="22" text-anchor="middle" font-size="10" font-weight="800" fill="#f1f0fe" font-family="'Plus Jakarta Sans',sans-serif">75%</text>
+                <text x="26" y="31" text-anchor="middle" font-size="6" fill="rgba(255,255,255,0.45)" font-family="'Be Vietnam Pro',sans-serif">hoàn thành</text>
+              </g>
+
+              <!-- Avatar + name card -->
+              <g transform="translate(248, 196)">
+                <rect width="110" height="52" rx="10" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+                <!-- Avatar circle -->
+                <circle cx="24" cy="26" r="16" fill="rgba(99,102,241,0.35)" stroke="rgba(99,102,241,0.6)" stroke-width="1.5"/>
+                <!-- Avatar person silhouette -->
+                <circle cx="24" cy="20" r="6" fill="#a5b4fc"/>
+                <path d="M12 38 C12 30, 36 30, 36 38" fill="#a5b4fc"/>
+                <!-- Text -->
+                <rect x="44" y="16" width="56" height="3.5" rx="1.5" fill="rgba(255,255,255,0.35)"/>
+                <rect x="44" y="24" width="40" height="2.5" rx="1" fill="rgba(255,255,255,0.18)"/>
+                <!-- Status dot -->
+                <circle cx="44" cy="34" r="3.5" fill="#34d399"/>
+                <rect x="51" y="32" width="32" height="2.5" rx="1" fill="rgba(52,211,153,0.5)"/>
+              </g>
+
+              <!-- ══════════════════════════════════════════
+                   FLOATING SPARKLES / PARTICLES
+              ══════════════════════════════════════════ -->
+              <!-- Dot particles -->
+              <circle cx="78"  cy="190" r="2.5" fill="#6366f1" opacity="0.7"/>
+              <circle cx="88"  cy="178" r="1.5" fill="#8b5cf6" opacity="0.5"/>
+              <circle cx="340" cy="155" r="2"   fill="#2dd4bf" opacity="0.6"/>
+              <circle cx="355" cy="170" r="1.5" fill="#6366f1" opacity="0.4"/>
+              <circle cx="55"  cy="155" r="1.5" fill="#fbbf24" opacity="0.6"/>
+
+              <!-- Small sparkle stars -->
+              <g fill="#fbbf24" opacity="0.75">
+                <polygon points="310,15 311.5,19.5 316,19.5 312.5,22 313.5,27 310,24 306.5,27 307.5,22 304,19.5 308.5,19.5" transform="scale(0.55) translate(257,0)"/>
+              </g>
+              <g fill="#a5b4fc" opacity="0.6">
+                <polygon points="50,25 51,28 54,28 51.5,30 52.5,33 50,31 47.5,33 48.5,30 46,28 49,28"/>
+              </g>
+              <g fill="#2dd4bf" opacity="0.5">
+                <polygon points="362,60 363,63 366,63 363.5,65 364.5,68 362,66 359.5,68 360.5,65 358,63 361,63"/>
+              </g>
+
+              <!-- Corner accent lines -->
+              <g stroke="rgba(99,102,241,0.30)" stroke-width="1.5" stroke-linecap="round">
+                <line x1="10" y1="10" x2="22" y2="10"/>
+                <line x1="10" y1="10" x2="10" y2="22"/>
+              </g>
+              <g stroke="rgba(45,212,191,0.30)" stroke-width="1.5" stroke-linecap="round">
+                <line x1="370" y1="275" x2="358" y2="275"/>
+                <line x1="370" y1="275" x2="370" y2="263"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="right-content">
+          <div class="right-badge">✦ EduGate Platform</div>
+          <h2 class="right-title">Học tập không<br>giới hạn</h2>
+          <p class="right-sub">
+            Truy cập hàng trăm khóa học, theo dõi tiến độ, và phát triển kỹ năng cùng cộng đồng EduGate.
+          </p>
+          <div class="right-chips">
+            <span class="right-chip">Modern LMS</span>
+            <span class="right-chip">Live Progress</span>
+            <span class="right-chip">Multi-role</span>
+          </div>
+        </div>
+      </div><!-- /.register-right -->
+
+    </div><!-- /.register-wrapper -->
+  </div><!-- /.main-area -->
+
+</div><!-- /.page-root -->
+
+<script>
+  /* ── Hiện/ẩn fields Giảng viên khi thay đổi vai trò ─── */
+  const roleSelect = document.getElementById('User_role');
+  const lecturerFields = ['field-degree', 'field-title', 'field-exp', 'field-degrees'];
+
+  function toggleLecturerFields() {
+    const isLecturer = roleSelect.value === 'Lecturer';
+    lecturerFields.forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isLecturer ? '' : 'none';
+    });
+    // Xoá required/value khi ẩn để tránh submit lỗi
+    ['Academic_degree', 'Academic_title', 'Teaching_experience'].forEach(function(name) {
+      const el = document.querySelector('[name="' + name + '"]');
+      if (!el) return;
+      if (isLecturer) {
+        if (name === 'Academic_degree') el.required = true;
+      } else {
+        el.required = false;
+      }
+    });
+  }
+
+  function addDegreeRow() {
+    var list = document.getElementById('degrees-list');
+    var row = document.createElement('div');
+    row.className = 'degree-row';
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+    row.innerHTML =
+      '<input type="text" name="degrees[]" class="form-input degree-input"' +
+      ' placeholder="Vd: Thạc sĩ Khoa học Máy tính – ĐH Bách Khoa"' +
+      ' maxlength="100" style="flex:1;" autofocus>' +
+      '<button type="button" class="btn-rm-degree" onclick="removeDegreeRow(this)" title="Xóa dòng này"' +
+      ' style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(251,113,133,0.4);' +
+      'background:rgba(251,113,133,0.08);color:#fb7185;cursor:pointer;display:flex;align-items:center;justify-content:center;">' +
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">' +
+      '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+    list.appendChild(row);
+    row.querySelector('input').focus();
+  }
+
+  function removeDegreeRow(btn) {
+    var row = btn.closest('.degree-row');
+    if (row) row.remove();
+  }
+
+  roleSelect.addEventListener('change', toggleLecturerFields);
+
+  // Chạy ngay khi load (trường hợp form re-populate sau lỗi)
+  toggleLecturerFields();
+
+  /* ── Toggle Password Visibility ────────────────────────── */
+  document.querySelectorAll('.toggle-password').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const input = this.parentElement.querySelector('input');
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+
+      // Update icon (optional: you could switch between eye and eye-off)
+      this.style.color = isPassword ? 'var(--indigo-600)' : 'var(--txt-muted)';
+    });
+  });
+
+  /* ── Submit: validation & loading state ────────────────── */
+  document.getElementById('register-form').addEventListener('submit', function(e) {
+    const password = document.getElementById('Password').value;
+    const confirm = document.getElementById('Confirm_password').value;
+
+    if (password !== confirm) {
+      e.preventDefault();
+      alert('Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Đang tạo tài khoản…';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thông tin sinh viên</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="/css/lms-theme.css">
+</head>
+
+<body class="bg-light">
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="/student/dashboard" class="btn btn-outline-secondary">
+      ← Trang học tập
+    </a>
+
+    <form
+      method="POST"
+      action="/logout"
+      onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?');"
+    >
+      <button class="btn btn-outline-danger" type="submit">
+        Đăng xuất
+      </button>
+    </form>
+  </div>
+
+  <% if (success) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+
+  <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <div class="card mb-4">
+    <div class="card-header fw-bold">
+      Thông tin cá nhân
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4"><strong>Họ tên:</strong> <%= user.Full_name %></div>
+        <div class="col-md-4"><strong>Email:</strong> <%= user.Email %></div>
+        <div class="col-md-4"><strong>Username:</strong> <%= user.Username %></div>
+        <div class="col-md-4 mt-2"><strong>Khoa:</strong> <%= user.Dept_name %></div>
+        <div class="col-md-4 mt-2"><strong>Chuyên ngành:</strong> <%= user.Major_name %></div>
+        <div class="col-md-4 mt-2"><strong>Địa chỉ:</strong> <%= user.Address || '' %></div>
+      </div>
+
+      <hr>
+
+      <strong>Số điện thoại:</strong>
+      <% if (phones.length === 0) { %>
+        <span class="text-muted">Chưa có</span>
+      <% } %>
+
+      <% phones.forEach(p => { %>
+        <span class="badge bg-secondary"><%= p.Phone_number %></span>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header fw-bold">
+      Đổi mật khẩu đăng nhập
+    </div>
+
+    <div class="card-body">
+      <form method="POST" action="/student/profile/password" class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Mật khẩu hiện tại</label>
+          <input type="password" name="old_password" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Mật khẩu mới</label>
+          <input type="password" name="new_password" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Xác nhận mật khẩu mới</label>
+          <input type="password" name="confirm_password" class="form-control" required>
+        </div>
+
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit">
+            Đổi mật khẩu
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header fw-bold">
+      Thông tin học tập
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <strong>GPA:</strong>
+          <%= academic.GPA ?? 0 %>
+        </div>
+
+        <div class="col-md-4">
+          <strong>Tín chỉ tích lũy:</strong>
+          <%= academic.Accumulated_credits ?? 0 %>
+        </div>
+
+        <div class="col-md-4">
+          <strong>Số khóa học đã tham gia:</strong>
+          <%= academic.Total_courses ?? 0 %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header fw-bold">
+      Các khóa học đã tham gia
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+        <tr>
+          <th>Course ID</th>
+          <th>Khóa học</th>
+          <th>Môn học</th>
+          <th>Tín chỉ</th>
+          <th>Trạng thái</th>
+          <th>Điểm cuối</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% courses.forEach(c => { %>
+          <tr>
+            <td><%= c.Course_ID %></td>
+            <td><%= c.Course_name %></td>
+            <td><%= c.Subject_name %></td>
+            <td><%= c.Credits %></td>
+            <td><%= c.Enroll_status %></td>
+            <td><%= c.Final_score ?? '' %></td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

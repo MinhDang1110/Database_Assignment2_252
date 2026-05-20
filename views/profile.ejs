@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>LMS EduGate – Hồ sơ cá nhân</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-400: #818cf8;
+      --indigo-300: #a5b4fc;
+      --indigo-100: #e0e7ff;
+      --violet-500: #8b5cf6;
+      --violet-400: #a78bfa;
+      --teal-400:   #2dd4bf;
+      --teal-300:   #5eead4;
+      --amber-400:  #fbbf24;
+      --emerald-500:#10b981;
+      --rose-400:   #fb7185;
+
+      --bg-page:   #f4f6ff;
+      --bg-card:   #ffffff;
+      --bg-soft:   #f8f9ff;
+      --bg-nav:    #0d0b1e;
+      --bg-field:  #f8f9ff;
+
+      --txt-head:  #0d0c22;
+      --txt-body:  #374151;
+      --txt-soft:  #6b7280;
+      --txt-muted: #9ca3af;
+      --txt-light: #f1f0fe;
+
+      --border:    #e5e7f0;
+      --border-soft:#eef0f8;
+
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.06);
+      --shadow-md: 0 8px 24px rgba(15,23,42,0.08);
+      --shadow-lg: 0 20px 48px rgba(15,23,42,0.10);
+      --shadow-indigo: 0 10px 28px rgba(99,102,241,0.28);
+
+      --r-xs: 8px;  --r-sm: 12px;
+      --r-md: 16px; --r-lg: 22px;
+      --r-xl: 28px; --r-2xl: 34px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--txt-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── PAGE WRAPPER ───────────────────────────────── */
+    .page-root { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── TOPNAV ─────────────────────────────────────── */
+    .topnav {
+      background:
+        radial-gradient(ellipse 70% 100% at 0% 50%, rgba(99,102,241,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(139,92,246,0.16) 0%, transparent 50%),
+        #0d0b1e;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+    }
+
+    .topnav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .nav-logo {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #2dd4bf 100%);
+      display: grid;
+      place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: white;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.50), inset 0 1px 0 rgba(255,255,255,0.22);
+      flex-shrink: 0;
+    }
+
+    .nav-wordmark {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f0fe;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-wordmark small {
+      display: block;
+      font-size: 11px;
+      color: #6b7191;
+      font-weight: 400;
+      margin-top: 1px;
+      font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .btn-nav {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.16s;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav:active { transform: scale(0.97); }
+
+    .btn-nav-ghost {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .btn-nav-ghost:hover { background: rgba(255,255,255,0.13); color: #fff; }
+
+    .btn-nav-danger {
+      background: rgba(251,113,133,0.14);
+      color: #fda4af;
+      border: 1px solid rgba(251,113,133,0.22);
+    }
+    .btn-nav-danger:hover { background: rgba(251,113,133,0.24); color: #fff; }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      padding: 32px 28px 52px;
+      max-width: 1240px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ─── ALERTS ─────────────────────────────────────── */
+    .alert-bar {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: var(--r-md);
+      padding: 13px 16px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 20px;
+      animation: alert-in 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes alert-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .alert-bar svg { flex-shrink: 0; margin-top: 1px; }
+    .alert-bar-success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .alert-bar-danger  { background: #fff1f2; border-color: #fda4af; color: #be123c; }
+
+    /* ─── PROFILE HERO ───────────────────────────────── */
+    .profile-hero {
+      border-radius: var(--r-2xl);
+      padding: 36px 40px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%,   rgba(99,102,241,0.30) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 100% at 100% 100%, rgba(139,92,246,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 60% at 60% 20%,   rgba(45,212,191,0.10) 0%, transparent 40%),
+        #0f0d26;
+      box-shadow: 0 24px 60px rgba(13,11,30,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      animation: hero-in 0.65s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .profile-hero::after {
+      content: "";
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero-left { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+
+    .avatar-block {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar-ring {
+      width: 86px; height: 86px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      display: grid;
+      place-items: center;
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .avatar-status {
+      position: absolute;
+      bottom: 6px; right: 6px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--teal-400);
+      border: 2.5px solid #0f0d26;
+      box-shadow: 0 0 8px rgba(45,212,191,0.8);
+    }
+
+    .hero-name {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: #f1f0fe;
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .hero-meta {
+      color: rgba(255,255,255,0.60);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-meta-sep {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.30);
+    }
+
+    .hero-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(99,102,241,0.18);
+      border: 1px solid rgba(99,102,241,0.32);
+      color: var(--indigo-300);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      backdrop-filter: blur(6px);
+    }
+
+    .role-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--teal-400);
+      box-shadow: 0 0 8px rgba(45,212,191,0.9);
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.6); }
+    }
+
+    /* ─── STAT CARDS (student only) ─────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .stat-card:nth-child(1) { animation-delay: .10s; }
+    .stat-card:nth-child(2) { animation-delay: .17s; }
+    .stat-card:nth-child(3) { animation-delay: .24s; }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(99,102,241,0.24);
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 2px 2px 0 0;
+    }
+    .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+    .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .stat-card:nth-child(3)::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+    .stat-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+    .si-indigo  { background: rgba(99,102,241,0.10); }
+    .si-emerald { background: rgba(16,185,129,0.10); }
+    .si-violet  { background: rgba(139,92,246,0.10); }
+
+    .stat-value {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--txt-head);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .stat-label { font-size: 13px; font-weight: 700; color: var(--txt-soft); margin-bottom: 3px; }
+    .stat-hint  { font-size: 12px; color: var(--txt-muted); }
+
+    /* ─── PROFILE GRID LAYOUT ────────────────────────── */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    /* ─── PANEL CARD ─────────────────────────────────── */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 22px;
+      animation: card-in 0.55s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .panel-header {
+      padding: 18px 24px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .panel-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #2dd4bf);
+    }
+
+    .panel-title-wrap {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .panel-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--txt-head);
+      letter-spacing: -0.02em;
+      margin-bottom: 2px;
+    }
+
+    .panel-subtitle { font-size: 13px; color: var(--txt-muted); }
+
+    .panel-body { padding: 24px; }
+
+    /* ─── FORM ELEMENTS ──────────────────────────────── */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .field label,
+    .readonly-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 7px;
+      transition: color 0.18s;
+    }
+
+    .field:focus-within label { color: var(--indigo-600); }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap::after {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+    .input-wrap:focus-within::after { opacity: 0.12; }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      background: var(--bg-field);
+      border-radius: var(--r-md);
+      padding: 11px 14px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--txt-head);
+      outline: none;
+      transition: border-color 0.20s, box-shadow 0.20s, background 0.20s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #b0b7c9; }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      background: #fff;
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%239ca3af' stroke-width='2' stroke-linecap='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 38px;
+      cursor: pointer;
+    }
+
+    .form-textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
+
+    .readonly-field {
+      width: 100%;
+      background: #f1f4fc;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--r-md);
+      padding: 11px 14px;
+      font-size: 14px;
+      color: var(--txt-soft);
+      font-weight: 600;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: var(--txt-muted);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    /* Section divider inside form */
+    .form-section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 24px 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--indigo-500);
+    }
+
+    .form-section-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border-soft);
+    }
+
+    /* Password note */
+    .pw-note {
+      background: rgba(99,102,241,0.06);
+      border: 1px solid rgba(99,102,241,0.14);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--txt-soft);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .pw-note svg { flex-shrink: 0; color: var(--indigo-400); margin-top: 1px; }
+
+    /* Submit button */
+    .save-btn {
+      width: 100%;
+      height: 52px;
+      border: none;
+      border-radius: var(--r-md);
+      background: linear-gradient(135deg, #4f46e5, #6366f1 50%, #8b5cf6);
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(99,102,241,0.32);
+      transition: transform 0.20s, box-shadow 0.20s;
+      position: relative;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .save-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: skewX(-15deg);
+      transition: left 0.5s;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(99,102,241,0.44);
+    }
+    .save-btn:hover::before { left: 140%; }
+    .save-btn:active { transform: translateY(0); }
+    .save-btn:focus-visible { outline: 3px solid rgba(99,102,241,0.50); outline-offset: 3px; }
+
+    /* ─── INFO LIST (right sidebar) ─────────────────── */
+    .info-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .info-item {
+      background: var(--bg-soft);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+      transition: border-color 0.18s;
+    }
+    .info-item:hover { border-color: rgba(99,102,241,0.22); }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--txt-muted);
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--txt-head);
+      word-break: break-word;
+    }
+
+    /* Phone badges */
+    .phone-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(99,102,241,0.10);
+      color: var(--indigo-600);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 999px;
+      padding: 3px 11px;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin: 2px 3px 2px 0;
+    }
+
+    /* ─── COURSE TABLE SECTION ───────────────────────── */
+    .table-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .table-panel-head {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-panel-head::before {
+      content: "";
+      width: 3px;
+      height: 20px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #6366f1, #2dd4bf);
+      flex-shrink: 0;
+    }
+
+    .table-panel-title {
+      font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--txt-head);
+      letter-spacing: -0.02em;
+    }
+
+    .table-count-badge {
+      background: rgba(99,102,241,0.10);
+      color: var(--indigo-600);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table thead tr { background: #0d0b1e; }
+
+    .data-table thead th {
+      padding: 13px 18px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.55);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--border-soft);
+      transition: background 0.16s;
+    }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:hover { background: rgba(99,102,241,0.03); }
+
+    .data-table tbody td {
+      padding: 13px 18px;
+      font-size: 13.5px;
+      color: var(--txt-body);
+      vertical-align: middle;
+    }
+
+    .td-id { color: var(--txt-muted); font-size: 12.5px; font-weight: 600; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-badge::before {
+      content: "";
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-active    { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.22); }
+    .status-active::before { background: #f59e0b; }
+    .status-completed { background: rgba(16,185,129,0.12); color: #065f46; border: 1px solid rgba(16,185,129,0.22); }
+    .status-completed::before { background: #10b981; }
+    .status-dropped   { background: rgba(239,68,68,0.10); color: #991b1b; border: 1px solid rgba(239,68,68,0.18); }
+    .status-dropped::before { background: #ef4444; }
+
+    .score-chip {
+      display: inline-block;
+      background: rgba(99,102,241,0.10);
+      color: var(--indigo-600);
+      border-radius: var(--r-xs);
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      min-width: 38px;
+      text-align: center;
+    }
+
+
+
+    .logout-form { margin: 0; }
+    .muted-inline { color: var(--txt-muted); font-weight: 400; }
+    .table-scroll { overflow-x: auto; }
+    .empty-table-cell { text-align: center; padding: 38px 18px; color: var(--txt-muted); }
+    .course-name-cell { font-weight: 700; color: var(--txt-head); }
+    .credit-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: rgba(99,102,241,0.10);
+      color: var(--indigo-600);
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .score-empty { color: var(--txt-muted); font-size: 13px; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .main-content { padding: 20px 16px 40px; }
+      .topnav { padding: 0 16px; }
+      .profile-hero { padding: 26px 22px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .field-row, .field-row-3 { grid-template-columns: 1fr; }
+      .data-table thead th:nth-child(3),
+      .data-table tbody td:nth-child(3) { display: none; }
+    }
+    @media (max-width: 520px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .hero-left { gap: 14px; }
+      .avatar-ring { width: 66px; height: 66px; font-size: 22px; border-radius: 20px; }
+      .hero-name { font-size: 20px; }
+      .topnav .nav-wordmark small { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+<%
+  function degreeLabel(value) {
+    const map = { CN: 'Cử nhân (CN)', KS: 'Kỹ sư (KS)', ThS: 'Thạc sỹ (ThS)', TS: 'Tiến sỹ (TS)' };
+    return map[value] || 'Chưa có';
+  }
+  function titleLabel(value) {
+    const map = { PGS: 'Phó giáo sư (PGS)', GS: 'Giáo sư (GS)' };
+    return map[value] || 'Không có';
+  }
+
+  const u            = typeof user          !== 'undefined' ? user          : {};
+  const phoneList    = typeof phones        !== 'undefined' ? phones        : [];
+  const student      = typeof studentInfo   !== 'undefined' ? studentInfo   : null;
+  const lecturer     = typeof lecturerInfo  !== 'undefined' ? lecturerInfo  : null;
+  const academicInfo = typeof academic      !== 'undefined' ? academic      : null;
+  const courseList   = typeof courses       !== 'undefined' ? courses       : [];
+  const successMessage = typeof success !== 'undefined' ? success : null;
+  const errorMessage   = typeof error   !== 'undefined' ? error   : null;
+  const phoneText    = phoneList.map(p => p.Phone_number).join('\n');
+
+  let backUrl = '/';
+  if (u.User_role === 'Student')  backUrl = '/student/dashboard';
+  if (u.User_role === 'Lecturer') backUrl = '/lecturer/dashboard';
+  if (u.User_role === 'Admin')    backUrl = '/admin/dashboard';
+
+  const initials = String(u.Full_name || u.Username || 'U')
+    .trim().split(/\s+/).slice(-2).map(x => x.charAt(0).toUpperCase()).join('');
+
+  let roleText = u.User_role || '';
+  if (u.User_role === 'Student')  roleText = 'Sinh viên';
+  if (u.User_role === 'Lecturer') roleText = 'Giảng viên';
+  if (u.User_role === 'Admin')    roleText = 'Quản trị viên';
+%>
+
+<div class="page-root">
+
+  <!-- ══ TOPNAV ══════════════════════════════════════════ -->
+  <nav class="topnav" aria-label="Thanh điều hướng chính">
+    <a href="<%= backUrl %>" class="nav-brand" aria-label="LMS EduGate – Quay về Dashboard">
+      <div class="nav-logo">E</div>
+      <div class="nav-wordmark">
+        LMS EduGate
+        <small>Hệ thống học tập</small>
+      </div>
+    </a>
+
+    <div class="nav-right">
+      <a href="<%= backUrl %>" class="btn-nav btn-nav-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Quay lại
+      </a>
+
+      <form method="POST" action="/logout" class="logout-form" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+        <button class="btn-nav btn-nav-danger" type="submit">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- ══ MAIN ════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- Alerts -->
+    <% if (successMessage) { %>
+      <div class="alert-bar alert-bar-success" role="alert">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#16a34a" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 4.5-5" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <%= successMessage %>
+      </div>
+    <% } %>
+    <% if (errorMessage) { %>
+      <div class="alert-bar alert-bar-danger" role="alert">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#be123c" stroke-width="1.5"/><path d="M10 6v4.5M10 13.5v.5" stroke="#be123c" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <!-- ── PROFILE HERO ── -->
+    <section class="profile-hero" aria-label="Thông tin tổng quan">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="avatar-block">
+            <div class="avatar-ring" aria-hidden="true"><%= initials || 'U' %></div>
+            <div class="avatar-status" aria-label="Đang hoạt động"></div>
+          </div>
+          <div>
+            <h1 class="hero-name"><%= u.Full_name || 'Người dùng' %></h1>
+            <div class="hero-meta">
+              <span><%= u.Email || '' %></span>
+              <% if (u.Username) { %>
+                <span class="hero-meta-sep"></span>
+                <span>@<%= u.Username %></span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <div class="hero-role-badge">
+          <span class="role-dot"></span>
+          <%= roleText %>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STUDENT STATS ── -->
+    <% if (u.User_role === 'Student' && academicInfo) { %>
+      <div class="stat-grid" role="region" aria-label="Thống kê học tập">
+        <div class="stat-card">
+          <div class="stat-icon si-indigo">🎯</div>
+          <div class="stat-value"><%= academicInfo.GPA ?? 0 %></div>
+          <div class="stat-label">GPA</div>
+          <div class="stat-hint">Điểm trung bình tích lũy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-emerald">📘</div>
+          <div class="stat-value"><%= academicInfo.Accumulated_credits ?? 0 %></div>
+          <div class="stat-label">Tín chỉ tích lũy</div>
+          <div class="stat-hint">Tổng tín chỉ đã hoàn thành</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-violet">🎓</div>
+          <div class="stat-value"><%= academicInfo.Total_courses ?? 0 %></div>
+          <div class="stat-label">Khóa học đã tham gia</div>
+          <div class="stat-hint">Tổng khóa học đã đăng ký</div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- ── PROFILE LAYOUT ── -->
+    <div class="profile-layout">
+
+      <!-- LEFT — Edit form -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title">Chỉnh sửa thông tin</div>
+              <div class="panel-subtitle">Cập nhật thông tin liên hệ và bảo mật tài khoản</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <form method="POST" action="/profile" autocomplete="off">
+
+              <div class="form-section-label">Thông tin tài khoản</div>
+
+              <div class="field field-row-3">
+                <div class="field">
+                  <div class="readonly-label">User ID</div>
+                  <div class="readonly-field"><%= u.User_ID %></div>
+                </div>
+                <div class="field">
+                  <div class="readonly-label">Tên đăng nhập</div>
+                  <div class="readonly-field"><%= u.Username || '' %></div>
+                  <div class="field-hint">Không được phép thay đổi.</div>
+                </div>
+                <div class="field">
+                  <div class="readonly-label">Vai trò</div>
+                  <div class="readonly-field"><%= roleText %></div>
+                </div>
+              </div>
+
+              <div class="field field-row">
+                <div class="field">
+                  <label for="Full_name">Họ tên</label>
+                  <div class="input-wrap">
+                    <input type="text" id="Full_name" name="Full_name" class="form-input" value="<%= u.Full_name || '' %>" required placeholder="Nhập họ tên đầy đủ">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="Email">Email</label>
+                  <div class="input-wrap">
+                    <input type="email" id="Email" name="Email" class="form-input" value="<%= u.Email || '' %>" required placeholder="example@email.com">
+                  </div>
+                </div>
+              </div>
+
+              <div class="field field-row">
+                <div class="field">
+                  <label for="SSN">SSN / CCCD</label>
+                  <div class="input-wrap">
+                    <input type="text" id="SSN" name="SSN" class="form-input"
+                           value="<%= u.SSN || '' %>"
+                           required
+                           maxlength="12"
+                           pattern="[0-9]{12}"
+                           placeholder="Nhập 12 chữ số">
+                  </div>
+                  <div class="field-hint">Số căn cước công dân gồm đúng 12 chữ số.</div>
+                </div>
+                <div class="field">
+                  <label for="Address">Địa chỉ</label>
+                  <div class="input-wrap">
+                    <input type="text" id="Address" name="Address" class="form-input" value="<%= u.Address || '' %>" placeholder="Nhập địa chỉ">
+                  </div>
+                </div>
+              </div>
+
+              <% if (u.User_role === 'Lecturer') { %>
+                <div class="field field-row">
+                  <div class="field">
+                    <label for="Academic_degree">Học vị</label>
+                    <div class="input-wrap">
+                      <select id="Academic_degree" name="Academic_degree" class="form-select" required>
+                        <option value="CN" <%= lecturer && lecturer.Academic_degree === 'CN'  ? 'selected' : '' %>>Cử nhân (CN)</option>
+                        <option value="KS" <%= lecturer && lecturer.Academic_degree === 'KS'  ? 'selected' : '' %>>Kỹ sư (KS)</option>
+                        <option value="ThS" <%= lecturer && lecturer.Academic_degree === 'ThS' ? 'selected' : '' %>>Thạc sỹ (ThS)</option>
+                        <option value="TS" <%= lecturer && lecturer.Academic_degree === 'TS'  ? 'selected' : '' %>>Tiến sỹ (TS)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="Academic_title">Học hàm</label>
+                    <div class="input-wrap">
+                      <select id="Academic_title" name="Academic_title" class="form-select">
+                        <option value="" <%= !lecturer || !lecturer.Academic_title ? 'selected' : '' %>>Không có</option>
+                        <option value="PGS" <%= lecturer && lecturer.Academic_title === 'PGS' ? 'selected' : '' %>>Phó giáo sư (PGS)</option>
+                        <option value="GS"  <%= lecturer && lecturer.Academic_title === 'GS'  ? 'selected' : '' %>>Giáo sư (GS)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="Teaching_experience">Kinh nghiệm giảng dạy (năm)</label>
+                  <div class="input-wrap">
+                    <input type="number" id="Teaching_experience" name="Teaching_experience"
+                           class="form-input"
+                           min="0" max="60" step="1"
+                           value="<%= lecturer && lecturer.Teaching_experience != null ? lecturer.Teaching_experience : 0 %>"
+                           placeholder="Số năm kinh nghiệm">
+                  </div>
+                  <div class="field-hint">Nhập số năm kinh nghiệm giảng dạy (0 – 60).</div>
+                </div>
+              <% } %>
+
+              <% if (u.User_role === 'Lecturer') { %>
+              <!-- ── Quản lý Văn bằng ── -->
+              <div class="field">
+                <label style="margin-bottom:10px;display:block;">Văn bằng</label>
+                <div id="degrees-manager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+                  <% var initDegrees = (lecturer && lecturer.degrees) ? lecturer.degrees : []; %>
+                  <% initDegrees.forEach(function(deg) { %>
+                    <div class="deg-row" data-original="<%= deg %>" style="display:flex;gap:8px;align-items:center;">
+                      <input type="text" class="form-input deg-input" value="<%= deg %>"
+                             placeholder="Tên văn bằng" maxlength="100" style="flex:1;">
+                      <button type="button" class="deg-btn deg-save" onclick="saveDegree(this)" title="Lưu thay đổi"
+                        style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(99,102,241,0.35);background:rgba(99,102,241,0.08);color:var(--indigo-500);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.4;pointer-events:none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      </button>
+                      <button type="button" class="deg-btn deg-delete" onclick="deleteDegree(this)" title="Xóa văn bằng"
+                        style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(251,113,133,0.4);background:rgba(251,113,133,0.08);color:#fb7185;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      </button>
+                    </div>
+                  <% }) %>
+                </div>
+
+                <!-- Thêm mới -->
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="text" id="new-degree-input" class="form-input"
+                         placeholder="Vd: Tiến sĩ Toán học – ĐH Quốc gia HN"
+                         maxlength="100" style="flex:1;"
+                         onkeydown="if(event.key==='Enter'){event.preventDefault();addNewDegree();}">
+                  <button type="button" onclick="addNewDegree()"
+                    style="flex-shrink:0;height:40px;padding:0 16px;border-radius:8px;border:1px dashed rgba(99,102,241,0.45);background:rgba(99,102,241,0.06);color:var(--indigo-500);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Thêm
+                  </button>
+                </div>
+                <div id="deg-status" style="margin-top:8px;font-size:12.5px;min-height:18px;"></div>
+                <div class="field-hint" style="margin-top:4px;">Sửa trực tiếp rồi nhấn ✓ để lưu. Đối với thêm, nhập tên văn bằng rồi nhấn Enter. Ấn lưu thay đổi để cập nhật hiển thị</div>
+              </div>
+              <% } %>
+
+              <div class="field">
+                <label for="Phone_numbers">Số điện thoại</label>
+                <div class="input-wrap">
+                  <textarea id="Phone_numbers" name="Phone_numbers" class="form-textarea" rows="3" placeholder="Mỗi dòng một số điện thoại, hoặc ngăn cách bằng dấu phẩy"><%= phoneText %></textarea>
+                </div>
+                <div class="field-hint">Có thể thêm nhiều số điện thoại. Mỗi số gồm phải là số có 10 chữ số.</div>
+              </div>
+
+              <div class="form-section-label">Đổi mật khẩu</div>
+
+              <div class="pw-note">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Hãy nhớ kĩ mật khẩu mà bạn đã đổi.
+              </div>
+
+              <div class="field field-row-3">
+                <div class="field">
+                  <label for="old_password">Mật khẩu hiện tại</label>
+                  <div class="input-wrap">
+                    <input type="password" id="old_password" name="old_password" class="form-input" placeholder="••••••••••••">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="new_password">Mật khẩu mới</label>
+                  <div class="input-wrap">
+                    <input type="password" id="new_password" name="new_password" class="form-input" placeholder="••••••••••••">
+                  </div>
+                  <div class="field-hint">Ít nhất 12 ký tự, gồm chữ hoa, thường, số và ký tự đặc biệt.</div>
+                </div>
+                <div class="field">
+                  <label for="confirm_password">Xác nhận mật khẩu mới</label>
+                  <div class="input-wrap">
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="••••••••••••">
+                  </div>
+                </div>
+              </div>
+
+              <button class="save-btn" type="submit">Lưu thay đổi</button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — Summary -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title">Tổng quan hồ sơ</div>
+              <div class="panel-subtitle">Thông tin hiện tại của tài khoản</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="info-list">
+
+              <div class="info-item">
+                <div class="info-label">Họ tên</div>
+                <div class="info-value"><%= u.Full_name || 'Chưa có' %></div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value"><%= u.Email || 'Chưa có' %></div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-label">SSN / CCCD</div>
+                <div class="info-value"><%= u.SSN || 'Chưa có' %></div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-label">Địa chỉ</div>
+                <div class="info-value"><%= u.Address || 'Chưa có' %></div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-label">Số điện thoại</div>
+                <div class="info-value">
+                  <% if (phoneList.length === 0) { %>
+                    <span class="muted-inline">Chưa có</span>
+                  <% } else { %>
+                    <% phoneList.forEach(p => { %>
+                      <span class="phone-badge"><%= p.Phone_number %></span>
+                    <% }) %>
+                  <% } %>
+                </div>
+              </div>
+              
+
+              <% if (student) { %>
+                <div class="info-item">
+                  <div class="info-label">Khoa</div>
+                  <div class="info-value"><%= student.Dept_name || 'Chưa có' %></div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Chuyên ngành</div>
+                  <div class="info-value"><%= student.Major_name || 'Chưa có' %></div>
+                </div>
+              <% } %>
+
+              <% if (lecturer) { %>
+                <div class="info-item">
+                  <div class="info-label">Học vị</div>
+                  <div class="info-value"><%= degreeLabel(lecturer.Academic_degree) %></div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Học hàm</div>
+                  <div class="info-value"><%= titleLabel(lecturer.Academic_title) %></div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Khoa công tác</div>
+                  <div class="info-value"><%= lecturer.Dept_name || 'Chưa có' %></div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Kinh nghiệm giảng dạy</div>
+                  <div class="info-value"><%= lecturer.Teaching_experience != null ? lecturer.Teaching_experience + ' năm' : 'Chưa có' %></div>
+                </div>
+                <div class="info-item" style="align-items:flex-start;">
+                  <div class="info-label" style="padding-top:4px;">Văn bằng</div>
+                  <div class="info-value">
+                    <% if (!lecturer.degrees || lecturer.degrees.length === 0) { %>
+                      <span style="color:var(--txt-muted);font-style:italic;">Chưa có văn bằng nào.</span>
+                    <% } else { %>
+                      <div style="display:flex;flex-direction:column;gap:6px;">
+                        <% lecturer.degrees.forEach(function(deg) { %>
+                          <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:8px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.18);font-size:13px;color:var(--indigo-600);font-weight:500;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            <%= deg %>
+                          </span>
+                        <% }) %>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              <% } %>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end profile-layout -->
+
+    <!-- ── STUDENT COURSES TABLE ── -->
+    <% if (u.User_role === 'Student') { %>
+      <div class="table-panel">
+        <div class="table-panel-head">
+          <div class="table-panel-title">Các khóa học đã tham gia</div>
+          <span class="table-count-badge"><%= courseList.length %></span>
+        </div>
+
+        <div class="table-scroll">
+          <table class="data-table" role="table" aria-label="Danh sách khóa học đã tham gia">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Khóa học</th>
+                <th scope="col">Môn học</th>
+                <th scope="col">Tín chỉ</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Điểm cuối</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (courseList.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="empty-table-cell">
+                    Chưa có khóa học nào.
+                  </td>
+                </tr>
+              <% } %>
+              <% courseList.forEach(c => { %>
+                <tr>
+                  <td class="td-id"><%= c.Course_ID %></td>
+                  <td class="course-name-cell"><%= c.Course_name %></td>
+                  <td><%= c.Subject_name %></td>
+                  <td>
+                    <span class="credit-chip">
+                      <%= c.Credits %>
+                    </span>
+                  </td>
+                  <td>
+                    <% if (c.Enroll_status === 'Completed') { %>
+                      <span class="status-badge status-completed">Đã hoàn thành</span>
+                    <% } else if (c.Enroll_status === 'Dropped') { %>
+                      <span class="status-badge status-dropped">Đã hủy</span>
+                    <% } else { %>
+                      <span class="status-badge status-active">Đang tham gia</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (c.Final_score != null && c.Final_score !== '') { %>
+                      <span class="score-chip"><%= c.Final_score %></span>
+                    <% } else { %>
+                      <span class="score-empty">—</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+</div>
+
+<script>
+/* ── Degrees Manager (Lecturer profile) ─────────────────── */
+function degStatus(msg, isErr) {
+  var el = document.getElementById('deg-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isErr ? '#ef4444' : '#10b981';
+  clearTimeout(el._t);
+  el._t = setTimeout(function() { el.textContent = ''; }, 3000);
+}
+
+// Khi input trong row thay đổi → enable nút lưu
+document.addEventListener('input', function(e) {
+  if (!e.target.classList.contains('deg-input')) return;
+  var row = e.target.closest('.deg-row');
+  if (!row) return;
+  var saveBtn = row.querySelector('.deg-save');
+  var changed = e.target.value.trim() !== row.dataset.original;
+  saveBtn.style.opacity = changed ? '1' : '0.4';
+  saveBtn.style.pointerEvents = changed ? 'auto' : 'none';
+});
+
+function saveDegree(btn) {
+  var row = btn.closest('.deg-row');
+  var input = row.querySelector('.deg-input');
+  var oldVal = row.dataset.original;
+  var newVal = input.value.trim();
+  if (!newVal) { degStatus('Tên văn bằng không được để trống.', true); return; }
+  if (newVal === oldVal) return;
+  fetch('/profile/degrees/' + encodeURIComponent(oldVal), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ degree: newVal })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      row.dataset.original = newVal;
+      btn.style.opacity = '0.4';
+      btn.style.pointerEvents = 'none';
+      degStatus('Đã lưu: ' + newVal);
+    } else {
+      degStatus(data.error || 'Lỗi khi lưu.', true);
+    }
+  })
+  .catch(function() { degStatus('Lỗi kết nối.', true); });
+}
+
+function deleteDegree(btn) {
+  var row = btn.closest('.deg-row');
+  var val = row.dataset.original;
+  if (!confirm('Xóa văn bằng "' + val + '"?')) return;
+  fetch('/profile/degrees/' + encodeURIComponent(val), { method: 'DELETE' })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      row.remove();
+      degStatus('Đã xóa: ' + val);
+    } else {
+      degStatus(data.error || 'Lỗi khi xóa.', true);
+    }
+  })
+  .catch(function() { degStatus('Lỗi kết nối.', true); });
+}
+
+function addNewDegree() {
+  var input = document.getElementById('new-degree-input');
+  var val = input.value.trim();
+  if (!val) { degStatus('Vui lòng nhập tên văn bằng.', true); return; }
+  fetch('/profile/degrees', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ degree: val })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      // Thêm row mới vào DOM
+      var manager = document.getElementById('degrees-manager');
+      var row = document.createElement('div');
+      row.className = 'deg-row';
+      row.dataset.original = val;
+      row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+      row.innerHTML =
+        '<input type="text" class="form-input deg-input" value="' + val.replace(/"/g, '&quot;') + '"' +
+        ' placeholder="Tên văn bằng" maxlength="100" style="flex:1;">' +
+        '<button type="button" class="deg-btn deg-save" onclick="saveDegree(this)" title="Lưu thay đổi"' +
+        ' style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(99,102,241,0.35);' +
+        'background:rgba(99,102,241,0.08);color:var(--indigo-500,#6366f1);cursor:pointer;display:flex;' +
+        'align-items:center;justify-content:center;opacity:0.4;pointer-events:none;">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></button>' +
+        '<button type="button" class="deg-btn deg-delete" onclick="deleteDegree(this)" title="Xóa văn bằng"' +
+        ' style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:1px solid rgba(251,113,133,0.4);' +
+        'background:rgba(251,113,133,0.08);color:#fb7185;cursor:pointer;display:flex;align-items:center;justify-content:center;">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>';
+      manager.appendChild(row);
+      input.value = '';
+      degStatus('Đã thêm: ' + val);
+    } else {
+      degStatus(data.error || 'Lỗi khi thêm.', true);
+    }
+  })
+  .catch(function() { degStatus('Lỗi kết nối.', true); });
+}
+</script>
+
+</body>
+</html>

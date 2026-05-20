@@ -1,0 +1,18 @@
+{
+  "name": "lms_btl2_web",
+  "version": "1.0.0",
+  "description": "LMS BTL2 Web Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.18.3",
+    "express-session": "^1.19.0",
+    "method-override": "^3.0.0",
+    "mysql2": "^3.9.2"
+  }
+}
